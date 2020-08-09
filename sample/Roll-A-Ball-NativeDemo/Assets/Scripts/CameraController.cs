@@ -15,6 +15,7 @@
 using System.Collections;
 using UnityEngine;
 using adivery;
+using System.Security.Cryptography.X509Certificates;
 
 /// <summary>
 /// Camera controller.

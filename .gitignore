@@ -3,6 +3,7 @@
 adivery_unity_plugin/.gradle
 adivery_unity_plugin/local.properties
 adivery_unity_plugin/.idea
+adivery_unity_plugin/.idea/gradle.xml
 adivery_unity_plugin/.DS_Store
 adivery_unity_plugin/build
 adivery_unity_plugin/captures

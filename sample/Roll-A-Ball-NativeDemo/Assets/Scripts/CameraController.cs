@@ -34,7 +34,7 @@ public class CameraController : MonoBehaviour
 
         Adivery.requestBannerAd("5f2c4c86-a6ec-4735-9a44-f881fe40789f", Adivery.MEDIUM_RECTANGLE, Adivery.GRAVITY_TOP, new BannerAdCallback());
 
-        Adivery.requestInterstitalAd("de5db046-765d-478f-bb2e-30dc2eaf3f51", new InterstitialCallback());
+        Adivery.requestInterstitalAd("de5db046-765d-478f-bb2e-30dc2eaf3f51", new MyInterstitialAdCallback());
     }
 
     public void LateUpdate()

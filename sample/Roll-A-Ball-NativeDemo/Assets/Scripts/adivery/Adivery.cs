@@ -16,6 +16,10 @@ namespace adivery
         public static int MEDIUM_RECTANGLE = 2;
 
         public static void configure(String appId){
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -26,18 +30,30 @@ namespace adivery
 
         public static void showAd(String adId)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass adivery = new AndroidJavaClass("com.adivery.unitylib.AdiveryUnity");
             adivery.CallStatic("showAd", adId);
         }
 
         public static void setLoggingEnabled(bool enabled)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass adivery = new AndroidJavaClass("com.adivery.unitylib.AdiveryUnity");
             adivery.CallStatic("setLoggingEnabled", enabled);
         }
 
-        public static void requestInterstitalAd(String placementId, InterstitialCallback callback)
+        public static void requestInterstitalAd(String placementId, InterstitialAdCallback callback)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -47,6 +63,10 @@ namespace adivery
 
         public static void requestRewardedAd(String placementId, RewardedAdCallback callback)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -56,6 +76,10 @@ namespace adivery
 
         public static void requestBannerAd(String placementId,int bannerType, int gravity, BannerAdCallback callback)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -65,6 +89,10 @@ namespace adivery
 
         public static void setBannerEnabled(bool enabled)
         {
+            if (Application.isEditor)
+            {
+                return;
+            }
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 

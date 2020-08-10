@@ -3,9 +3,9 @@
 namespace adivery
 {
 
-    public class InterstitialCallback : AndroidJavaProxy
+    public class InterstitialAdCallback : AndroidJavaProxy
     {
-        public InterstitialCallback() : base("com.adivery.unitylib.interfaces.AdiveryUnityInterstitialCallback") { }
+        public InterstitialAdCallback() : base("com.adivery.unitylib.interfaces.AdiveryUnityInterstitialCallback") { }
 
         public virtual void onAdLoaded(string adId)
         {

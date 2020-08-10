@@ -182,7 +182,7 @@ public class BallController : MonoBehaviour
             this.gameOver = true;
             Adivery.setBannerEnabled(false);
             
-            Adivery.requestRewardedAd("3f97dc4d-3e09-4024-acaf-931862c03ba8", new RewardedAdCallback());
+            Adivery.requestRewardedAd("3f97dc4d-3e09-4024-acaf-931862c03ba8", new MyRewardedAdCallback());
             AdInfo.isAdRequestSend = true;
             AdInfo.showAd = false;
             

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using adivery;
 
-public class MyInterstitialAdCallback : InterstitialAdCallback
+public class MyInterstitialCallback : InterstitialAdCallback
 {
     public override void onAdLoaded(string adId)
     {

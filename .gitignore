@@ -1,23 +1,5 @@
-// plugin files
-*.iml
-adivery_unity_plugin/.gradle
-adivery_unity_plugin/local.properties
-adivery_unity_plugin/.idea
-adivery_unity_plugin/.idea/gradle.xml
-adivery_unity_plugin/.DS_Store
-adivery_unity_plugin/build
-adivery_unity_plugin/captures
-adivery_unity_plugin/.externalNativeBuild
-adivery_unity_plugin/.cxx
-adivery_unity_plugin/adivery/build
-adivery_unity_plugin/app/build
-
-// unity project
-*.meta
+.gradle
+unity.log
+*.hprof
 *.apk
-*.log
-sample/Roll-A-Ball-NativeDemo/Library
-sample/Roll-A-Ball-NativeDemo/Logs
-sample/Roll-A-Ball-NativeDemo/Packages
-sample/Roll-A-Ball-NativeDemo/ProjectSettings
-sample/Roll-A-Ball-NativeDemo/Temp
+Adivery.unitypackage

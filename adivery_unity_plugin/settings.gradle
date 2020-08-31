@@ -1,4 +1,0 @@
-include ':adivery'
-include ':unitylib'
-include ':app'
-rootProject.name = "sample"

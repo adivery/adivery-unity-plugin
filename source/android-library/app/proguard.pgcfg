@@ -1,0 +1,9 @@
+# Keep Adivery Unity plugin classes.
+-keep class com.adivery.unity.** {
+   *;
+}
+
+# Keep Adivery Android classes.
+-keep com.adivery.sdk.** {
+   *;
+}

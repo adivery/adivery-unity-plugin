@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AdiveryUnity
 {
@@ -10,6 +7,19 @@ namespace AdiveryUnity
         internal static bool IsAdiverySupported()
         {
             return Application.platform == RuntimePlatform.Android;
+        }
+
+        internal static bool IsAdMobSupported()
+        {
+            AndroidJavaClass mobileAdsClass = null;
+            try
+            {
+                mobileAdsClass = new AndroidJavaClass("com.google.android.gms.ads.MobileAds");
+            } catch (AndroidJavaException)
+            {
+                // MobileAds class was not found
+            }
+            return mobileAdsClass != null;
         }
 
         internal static AndroidJavaObject GetAndroidActivity()
@@ -36,7 +46,16 @@ namespace AdiveryUnity
                 return;
             }
 
-            GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId);
+            if (!IsAdMobSupported())
+            {
+                // Initialize without AdMob adapter
+                GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId, new AndroidJavaObject[] { });
+                return;
+            }
+
+            // Initialize with AdMob adapter
+            AndroidJavaObject adMobAdapter = new AndroidJavaObject("com.adivery.sdk.networks.admob.AdMobAdapter");
+            GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId, new AndroidJavaObject[] { adMobAdapter });
         }
 
         public static void SetLoggingEnabled(bool enabled)

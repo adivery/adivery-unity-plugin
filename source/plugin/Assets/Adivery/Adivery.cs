@@ -9,19 +9,6 @@ namespace AdiveryUnity
             return Application.platform == RuntimePlatform.Android;
         }
 
-        internal static bool IsAdMobSupported()
-        {
-            AndroidJavaClass mobileAdsClass = null;
-            try
-            {
-                mobileAdsClass = new AndroidJavaClass("com.google.android.gms.ads.MobileAds");
-            } catch (AndroidJavaException)
-            {
-                // MobileAds class was not found
-            }
-            return mobileAdsClass != null;
-        }
-
         internal static AndroidJavaObject GetAndroidActivity()
         {
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -46,16 +33,7 @@ namespace AdiveryUnity
                 return;
             }
 
-            if (!IsAdMobSupported())
-            {
-                // Initialize without AdMob adapter
-                GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId, new AndroidJavaObject[] { });
-                return;
-            }
-
-            // Initialize with AdMob adapter
-            AndroidJavaObject adMobAdapter = new AndroidJavaObject("com.adivery.sdk.networks.admob.AdMobAdapter");
-            GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId, new AndroidJavaObject[] { adMobAdapter });
+            GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId);
         }
 
         public static void SetLoggingEnabled(bool enabled)

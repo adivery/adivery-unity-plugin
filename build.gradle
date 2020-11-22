@@ -55,7 +55,6 @@ task exportPackage() {
                  "-exportPackage",
                  "Assets/Adivery",
                  "Assets/Plugins/Android/adivery-sdk.aar",
-                 "Assets/Plugins/Android/adivery-admob-adapter.aar",
                  "Assets/Plugins/Android/adivery-unity.aar",
                  "${exportPath}",
                  "-quit"

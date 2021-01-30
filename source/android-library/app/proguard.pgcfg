@@ -4,6 +4,6 @@
 }
 
 # Keep Adivery Android classes.
--keep com.adivery.sdk.** {
+-keep class com.adivery.sdk.** {
    *;
 }

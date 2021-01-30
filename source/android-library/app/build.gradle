@@ -24,7 +24,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.adivery:sdk:3.1.4'
+    implementation 'com.adivery:sdk:3.3.0'
 }
 
 task clearAar(type: Delete) {

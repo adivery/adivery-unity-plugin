@@ -23,14 +23,14 @@ public class Banner {
   private static final int TYPE_LARGE_BANNER = 1;
   private static final int TYPE_MEDIUM_RECTANGLE = 2;
 
-  private String placementId;
-  private Activity activity;
-  private BannerType bannerType;
-  private int bannerGravity;
-  private View adView;
-  private BannerCallback callback;
-  private boolean isHidden;
-  private boolean isLoaded;
+  private final String placementId;
+  private final Activity activity;
+  private final BannerType bannerType;
+  private final int bannerGravity;
+  private final BannerCallback callback;
+  private FrameLayout bannerContainer;
+  private boolean loading = false;
+  private boolean loaded = false;
 
   public Banner(
       Activity activity,
@@ -43,8 +43,6 @@ public class Banner {
     this.bannerType = getBannerType(bannerType);
     this.bannerGravity = getBannerGravity(bannerPosition);
     this.callback = callback;
-    isLoaded = false;
-    isHidden = false;
   }
 
   private static int getBannerGravity(int bannerPosition) {
@@ -59,6 +57,12 @@ public class Banner {
   }
 
   public void loadAd() {
+    if (loading) {
+      return;
+    }
+
+    loading = true;
+
     Adivery.requestBannerAd(
         activity,
         placementId,
@@ -66,55 +70,61 @@ public class Banner {
         new AdiveryBannerCallback() {
           @Override
           public void onAdLoaded(View adView) {
-            Banner.this.adView = adView;
-            if (isHidden) {
-              adView.setVisibility(View.GONE);
+            loading = false;
+            loaded = true;
+
+            if (bannerContainer == null) {
+              bannerContainer = new FrameLayout(activity);
+              activity.addContentView(bannerContainer, getLayoutParams());
             }
-            activity.addContentView(adView, getLayoutParams());
-            isLoaded = true;
+
+            bannerContainer.removeAllViews();
+            bannerContainer.addView(adView);
+
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdLoaded();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdLoaded();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdLoadFailed(final int errorCode) {
+            loading = false;
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdLoadFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdLoadFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdShowFailed(final int errorCode) {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdShowFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdShowFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdClicked() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdClicked();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdClicked();
+                  }
+                })
                 .start();
           }
         });
@@ -171,7 +181,7 @@ public class Banner {
   }
 
   public boolean isLoaded() {
-    return isLoaded;
+    return loaded;
   }
 
   public void show() {
@@ -179,9 +189,8 @@ public class Banner {
         new Runnable() {
           @Override
           public void run() {
-            isHidden = false;
-            if (adView != null) {
-              adView.setVisibility(View.VISIBLE);
+            if (bannerContainer != null) {
+              bannerContainer.setVisibility(View.VISIBLE);
             }
           }
         });
@@ -192,9 +201,8 @@ public class Banner {
         new Runnable() {
           @Override
           public void run() {
-            isHidden = true;
-            if (adView != null) {
-              adView.setVisibility(View.GONE);
+            if (bannerContainer != null) {
+              bannerContainer.setVisibility(View.GONE);
             }
           }
         });
@@ -205,10 +213,10 @@ public class Banner {
         new Runnable() {
           @Override
           public void run() {
-            if (adView != null) {
-              ViewParent parentView = adView.getParent();
+            if (bannerContainer != null) {
+              ViewParent parentView = bannerContainer.getParent();
               if (parentView instanceof ViewGroup) {
-                ((ViewGroup) parentView).removeView(adView);
+                ((ViewGroup) parentView).removeView(bannerContainer);
               }
             }
           }
@@ -216,6 +224,7 @@ public class Banner {
   }
 
   private static class Insets {
+
     int top = 0;
     int bottom = 0;
     int left = 0;

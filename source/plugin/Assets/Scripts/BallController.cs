@@ -31,7 +31,12 @@ public class BallController : MonoBehaviour
             this.pickUps.Add(GameObject.Find("Pick Up " + i));
         }
 
-        LoadNewRewardedAd();
+        rewarded = new RewardedAd("3f97dc4d-3e09-4024-acaf-931862c03ba8");
+        rewarded.OnAdLoaded += OnRewardedAdLoaded;
+        rewarded.OnAdRewarded += OnRewardedAdRewarded;
+        rewarded.OnAdClosed += OnRewardedAdClosed;
+        rewarded.LoadAd();
+
         this.ResetGame();
     }
 
@@ -177,14 +182,6 @@ public class BallController : MonoBehaviour
         }
     }
 
-    private void LoadNewRewardedAd()
-    {
-        rewarded = new RewardedAd("3f97dc4d-3e09-4024-acaf-931862c03ba8");
-        rewarded.OnAdLoaded += OnRewardedAdLoaded;
-        rewarded.OnAdRewarded += OnRewardedAdRewarded;
-        rewarded.OnAdClosed += OnRewardedAdClosed;
-        rewarded.LoadAd();
-    }
 
     public void OnRewardedAdLoaded(object caller, EventArgs args)
     {
@@ -199,7 +196,7 @@ public class BallController : MonoBehaviour
     public void OnRewardedAdClosed(object caller, EventArgs args)
     {
         print("Rewarded ad closed");
-        LoadNewRewardedAd();
+        rewarded.LoadAd();
     }
 
     /// <summary>

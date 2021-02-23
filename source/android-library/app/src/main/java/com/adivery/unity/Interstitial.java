@@ -7,20 +7,26 @@ import com.adivery.sdk.AdiveryLoadedAd;
 
 public class Interstitial {
 
-  private String placementId;
-  private Activity activity;
-  private InterstitialCallback callback;
+  private final String placementId;
+  private final Activity activity;
+  private final InterstitialCallback callback;
   private AdiveryLoadedAd loadedAd;
-  private boolean isLoaded;
+  private boolean loading = false;
 
   public Interstitial(Activity activity, String placementId, InterstitialCallback callback) {
     this.activity = activity;
     this.placementId = placementId;
     this.callback = callback;
-    isLoaded = false;
   }
 
   public void loadAd() {
+    if (loading || isLoaded()) {
+      return;
+    }
+
+    loadedAd = null;
+    loading = true;
+
     Adivery.requestInterstitialAd(
         activity,
         placementId,
@@ -28,81 +34,82 @@ public class Interstitial {
           @Override
           public void onAdLoaded(AdiveryLoadedAd ad) {
             loadedAd = ad;
-            isLoaded = true;
+            loading = false;
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdLoaded();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdLoaded();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdLoadFailed(final int errorCode) {
+            loading = false;
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdLoadFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdLoadFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdShown() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdShown();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdShown();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdShowFailed(final int errorCode) {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdShowFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdShowFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdClicked() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdClicked();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdClicked();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdClosed() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdClosed();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdClosed();
+                  }
+                })
                 .start();
           }
         });
   }
 
   public boolean isLoaded() {
-    return isLoaded;
+    return loadedAd != null;
   }
 
   public void show() {
@@ -111,7 +118,6 @@ public class Interstitial {
           @Override
           public void run() {
             if (isLoaded()) {
-              isLoaded = false;
               loadedAd.show();
               loadedAd = null;
             } else {

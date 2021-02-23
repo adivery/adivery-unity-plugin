@@ -10,11 +10,12 @@ import com.adivery.sdk.AdiveryNativeCallback;
 import java.io.ByteArrayOutputStream;
 
 public class Native {
-  private String placementId;
-  private Activity activity;
-  private NativeCallback callback;
+
+  private final String placementId;
+  private final Activity activity;
+  private final NativeCallback callback;
   private AdiveryNativeAd loadedAd;
-  private boolean isLoaded;
+  private boolean loading = false;
 
   private byte[] iconBytes;
   private byte[] imageBytes;
@@ -23,10 +24,15 @@ public class Native {
     this.placementId = placementId;
     this.activity = activity;
     this.callback = callback;
-    isLoaded = false;
   }
 
   public void loadAd() {
+    if (loading) {
+      return;
+    }
+
+    loading = true;
+
     Adivery.requestNativeAd(
         activity,
         placementId,
@@ -34,64 +40,65 @@ public class Native {
           @Override
           public void onAdLoaded(AdiveryNativeAd ad) {
             loadedAd = ad;
-            isLoaded = true;
+            loading = false;
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        iconBytes = getDrawableBytes(loadedAd.getIcon());
-                        imageBytes = getDrawableBytes(loadedAd.getImage());
-                        callback.onAdLoaded();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    iconBytes = getDrawableBytes(loadedAd.getIcon());
+                    imageBytes = getDrawableBytes(loadedAd.getImage());
+                    callback.onAdLoaded();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdLoadFailed(final int errorCode) {
+            loading = false;
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdLoadFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdLoadFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdShown() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdShown();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdShown();
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdShowFailed(final int errorCode) {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdShowFailed(errorCode);
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdShowFailed(errorCode);
+                  }
+                })
                 .start();
           }
 
           @Override
           public void onAdClicked() {
             new Thread(
-                    new Runnable() {
-                      @Override
-                      public void run() {
-                        callback.onAdClicked();
-                      }
-                    })
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    callback.onAdClicked();
+                  }
+                })
                 .start();
           }
         });
@@ -108,7 +115,7 @@ public class Native {
   }
 
   public boolean isLoaded() {
-    return isLoaded;
+    return loadedAd != null;
   }
 
   public String getHeadline() {

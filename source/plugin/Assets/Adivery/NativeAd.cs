@@ -103,28 +103,43 @@ namespace AdiveryUnity
 
             public override void onAdShowFailed(int errorCode)
             {
-                ad.OnAdShowFailed?.Invoke(this, errorCode);
+                AdiveryEventExecutor.ExecuteInUpdate(() =>
+                {
+                    ad.OnAdShowFailed?.Invoke(this, errorCode);
+                });
             }
 
             public override void onAdLoadFailed(int errorCode)
             {
-                ad.OnAdLoadFailed?.Invoke(this, errorCode);
+                AdiveryEventExecutor.ExecuteInUpdate(() =>
+                {
+                    ad.OnAdLoadFailed?.Invoke(this, errorCode);
+                });
             }
 
             public override void onAdClicked()
             {
-                ad.OnAdClicked?.Invoke(this, null);
+                AdiveryEventExecutor.ExecuteInUpdate(() =>
+                {
+                    ad.OnAdClicked?.Invoke(this, null);
+                });
             }
 
             public override void onAdShown()
             {
-                ad.OnAdShown?.Invoke(this, null);
+                AdiveryEventExecutor.ExecuteInUpdate(() =>
+                {
+                    ad.OnAdShown?.Invoke(this, null);
+                });
             }
 
             public override void onAdLoaded()
             {
-                ad.RecordImpression();
-                ad.OnAdLoaded?.Invoke(this, null);
+                AdiveryEventExecutor.ExecuteInUpdate(() =>
+                {
+                    ad.RecordImpression();
+                    ad.OnAdLoaded?.Invoke(this, null);
+                });
             }
         }
     }

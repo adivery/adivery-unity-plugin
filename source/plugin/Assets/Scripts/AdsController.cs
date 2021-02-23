@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Threading;
 using AdiveryUnity;
 using UnityEngine;
 
@@ -12,9 +12,12 @@ public class AdsController : MonoBehaviour
     private InterstitialAd interstitial;
     private NativeAd native;
     private bool nativeAdLoaded;
+    private Thread mainThread;
 
     public void Start()
     {
+        mainThread = System.Threading.Thread.CurrentThread;
+
         string appId = "7e27fb38-5aff-473a-998f-437b89426f66";
 
         Adivery.Configure(appId);
@@ -26,6 +29,11 @@ public class AdsController : MonoBehaviour
 
         interstitial = new InterstitialAd("de5db046-765d-478f-bb2e-30dc2eaf3f51");
         interstitial.OnAdLoaded += OnInterstitialAdLoaded;
+        interstitial.OnAdLoadFailed += OnInterstitialAdLoadFailed;
+        interstitial.OnAdShown += OnInterstitialAdShown;
+        interstitial.OnAdShowFailed += OnInterstitialAdShowFailed;
+        interstitial.OnAdClicked += OnInterstitialAdClicked;
+        interstitial.OnAdClosed += OnInterstitialAdClosed;
         interstitial.LoadAd();
 
         native = new NativeAd("103ea0d3-7b1d-458e-ac9d-a3165e7634d2");
@@ -33,22 +41,65 @@ public class AdsController : MonoBehaviour
         native.LoadAd();
     }
 
-    public void OnBannerAdLoaded(object caller, EventArgs args)
+    bool IsMainThread()
     {
-        print("Banner ad loaded");
+        return mainThread.Equals(Thread.CurrentThread);
     }
+
+    private void LogEvent(string evt)
+    {
+        print("Adivery Ad Event: " + evt + " Main Thread: " + IsMainThread());
+    }
+
+    // Interstitial Events
 
     public void OnInterstitialAdLoaded(object caller, EventArgs args)
     {
-        print("Interstitial ad loaded");
+        LogEvent("OnInterstitialAdLoaded");
         interstitial.Show();
     }
 
+    private void OnInterstitialAdLoadFailed(object sender, int e)
+    {
+        LogEvent("OnInterstitialAdLoadFailed");
+    }
+
+    private void OnInterstitialAdShowFailed(object sender, int e)
+    {
+        LogEvent("OnInterstitialAdShowFailed");
+    }
+
+    private void OnInterstitialAdShown(object sender, EventArgs e)
+    {
+        LogEvent("OnInterstitialAdShown");
+    }
+
+    private void OnInterstitialAdClicked(object sender, EventArgs e)
+    {
+        LogEvent("OnInterstitialAdClicked");
+    }
+
+    private void OnInterstitialAdClosed(object sender, EventArgs e)
+    {
+        LogEvent("OnInterstitialAdClosed");
+    }
+
+    // Banner Events
+
+    public void OnBannerAdLoaded(object caller, EventArgs args)
+    {
+        LogEvent("OnBannerAdLoaded");
+    }
+
+    // Native Events
+
     public void OnNativeAdLoaded(object caller, EventArgs args)
     {
-        print("Native ad loaded: " + native.GetHeadline());
+        LogEvent("OnNativeAdLoaded");
         nativeAdLoaded = true;
     }
+
+    // Show Native Ad
 
     public void Update()
     {
@@ -97,85 +148,4 @@ public class AdsController : MonoBehaviour
         }
     }
 
-    ///// <summary>
-    ///// Creates a new GameObject with a TextMesh component to display an error message.
-    ///// </summary>
-    ///// <returns>The GameObject with a TextMesh component.</returns>
-    ///// <param name="errorText">Error text to display.</param>
-    ///// <param name="offset">Local position offset from parent GameObject</param>
-    ///// <param name="parentObject">Parent GameObject for error text.</param>
-    //private GameObject CreateErrorTextOnGameObject(
-    //        string errorText,
-    //        GameObject parentObject,
-    //        Vector3 offset)
-    //{
-    //    GameObject errorTextObject = new GameObject("ErrorText1");
-
-    //    errorTextObject.transform.parent = parentObject.transform;
-    //    errorTextObject.transform.localPosition = offset;
-    //    errorTextObject.AddComponent<TextMesh>();
-
-    //    TextMesh textMeshComponent = errorTextObject.GetComponent<TextMesh>();
-    //    MeshRenderer meshRendererComponent = errorTextObject.GetComponent<MeshRenderer>();
-
-    //    textMeshComponent.text = errorText;
-    //    textMeshComponent.fontSize = 8;
-    //    textMeshComponent.anchor = TextAnchor.MiddleCenter;
-    //    textMeshComponent.font = this.TextFont;
-    //    meshRendererComponent.material = this.ErrorTextMaterial;
-
-    //    return errorTextObject;
-    //}
-
-    ///// <summary>
-    ///// Requests a CustomNativeTemplateAd.
-    ///// </summary>
-    //private void RequestNativeAd()
-    //{
-    //    AdLoader adLoader = new AdLoader.Builder(AdUnitId)
-    //        .ForCustomNativeAd(TemplateId)
-    //        .Build();
-    //    adLoader.OnCustomNativeTemplateAdLoaded += this.HandleCustomNativeAdLoaded;
-    //    adLoader.OnAdFailedToLoad += this.HandleNativeAdFailedToLoad;
-    //    adLoader.LoadAd(new AdRequest.Builder().Build());
-    //}
-
-    ///// <summary>
-    ///// Handles the ad event corresponding to a CustomNativeTemplateAd succesfully loading.
-    ///// </summary>
-    ///// <param name="sender">Sender.</param>
-    ///// <param name="args">EventArgs wrapper for CustomNativeTemplateAd that loaded.</param>
-    //private void HandleCustomNativeAdLoaded(object sender, CustomNativeEventArgs args)
-    //{
-    //    this.nativeAd = args.nativeAd;
-    //    this.nativeAdLoaded = true;
-    //}
-
-    ///// <summary>
-    ///// Handles the native ad failing to load.
-    ///// </summary>
-    ///// <param name="sender">Sender.</param>
-    ///// <param name="args">Error information.</param>
-    //private void HandleNativeAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
-    //{
-    //    Vector3 errorTextOffset = new Vector3(0, 0, -0.25f);
-
-    //    if (this.errorMessage1 == null)
-    //    {
-    //        this.errorMessage1 = this.CreateErrorTextOnGameObject(
-    //                "Ad failed to load",
-    //                GameObject.Find("Billboard1"),
-    //                errorTextOffset);
-    //    }
-
-    //    if (this.errorMessage2 == null)
-    //    {
-    //        this.errorMessage2 = this.CreateErrorTextOnGameObject(
-    //                "Ad failed to load",
-    //                GameObject.Find("Billboard2"),
-    //                errorTextOffset);
-    //    }
-
-    //    MonoBehaviour.print("Ad Loader fail event received with message: " + args.Message);
-    //}
 }

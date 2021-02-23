@@ -33,6 +33,7 @@ namespace AdiveryUnity
                 return;
             }
 
+            AdiveryEventExecutor.Initialize();
             GetAdiveryClass().CallStatic("configure", GetAndroidApplication(), appId);
         }
 

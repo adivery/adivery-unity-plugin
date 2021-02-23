@@ -81,51 +81,44 @@ public class Banner {
             bannerContainer.removeAllViews();
             bannerContainer.addView(adView);
 
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdLoaded();
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdLoaded();
+              }
+            });
           }
 
           @Override
           public void onAdLoadFailed(final int errorCode) {
             loading = false;
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdLoadFailed(errorCode);
-                  }
-                })
-                .start();
+
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdLoadFailed(errorCode);
+              }
+            });
           }
 
           @Override
           public void onAdShowFailed(final int errorCode) {
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdShowFailed(errorCode);
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdShowFailed(errorCode);
+              }
+            });
           }
 
           @Override
           public void onAdClicked() {
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdClicked();
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdClicked();
+              }
+            });
           }
         });
   }

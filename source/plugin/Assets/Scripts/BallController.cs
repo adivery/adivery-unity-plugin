@@ -33,6 +33,10 @@ public class BallController : MonoBehaviour
 
         rewarded = new RewardedAd("3f97dc4d-3e09-4024-acaf-931862c03ba8");
         rewarded.OnAdLoaded += OnRewardedAdLoaded;
+        rewarded.OnAdLoadFailed += OnRewardedAdLoadFailed;
+        rewarded.OnAdShown += OnRewardedAdShown;
+        rewarded.OnAdShowFailed += OnRewardedAdShowFailed;
+        rewarded.OnAdClicked += OnRewardedAdClicked;
         rewarded.OnAdRewarded += OnRewardedAdRewarded;
         rewarded.OnAdClosed += OnRewardedAdClosed;
         rewarded.LoadAd();
@@ -182,23 +186,6 @@ public class BallController : MonoBehaviour
         }
     }
 
-
-    public void OnRewardedAdLoaded(object caller, EventArgs args)
-    {
-        print("Rewarded ad loaded");
-    }
-
-    public void OnRewardedAdRewarded(object caller, EventArgs args)
-    {
-        print("Rewarded ad rewarded");
-    }
-
-    public void OnRewardedAdClosed(object caller, EventArgs args)
-    {
-        print("Rewarded ad closed");
-        rewarded.LoadAd();
-    }
-
     /// <summary>
     /// Defines layout of game over window.
     /// </summary>
@@ -247,4 +234,49 @@ public class BallController : MonoBehaviour
         this.rb.velocity = Vector3.zero;
         this.rb.angularVelocity = Vector3.zero;
     }
+
+    // Rewarded Events
+
+    public void OnRewardedAdLoaded(object caller, EventArgs args)
+    {
+        LogEvent("OnRewardedAdLoaded");
+    }
+
+    private void OnRewardedAdLoadFailed(object sender, int e)
+    {
+        LogEvent("OnRewardedAdLoadFailed");
+    }
+
+    private void OnRewardedAdShowFailed(object sender, int e)
+    {
+        LogEvent("OnRewardedAdShowFailed");
+    }
+
+    private void OnRewardedAdShown(object sender, EventArgs e)
+    {
+        LogEvent("OnRewardedAdShown");
+    }
+
+    private void OnRewardedAdClicked(object sender, EventArgs e)
+    {
+        LogEvent("OnRewardedAdClicked");
+    }
+
+
+    private void OnRewardedAdRewarded(object sender, EventArgs e)
+    {
+        LogEvent("OnRewardedAdRewarded");
+    }
+
+    private void OnRewardedAdClosed(object sender, EventArgs e)
+    {
+        LogEvent("OnRewardedAdClosed");
+        rewarded.LoadAd();
+    }
+
+    private void LogEvent(string evt)
+    {
+        print("Adivery Ad Event: " + evt);
+    }
+
 }

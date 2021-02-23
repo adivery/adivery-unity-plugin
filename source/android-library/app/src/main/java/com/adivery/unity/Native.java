@@ -41,65 +41,55 @@ public class Native {
           public void onAdLoaded(AdiveryNativeAd ad) {
             loadedAd = ad;
             loading = false;
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    iconBytes = getDrawableBytes(loadedAd.getIcon());
-                    imageBytes = getDrawableBytes(loadedAd.getImage());
-                    callback.onAdLoaded();
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                iconBytes = getDrawableBytes(loadedAd.getIcon());
+                imageBytes = getDrawableBytes(loadedAd.getImage());
+                callback.onAdLoaded();
+              }
+            });
           }
 
           @Override
           public void onAdLoadFailed(final int errorCode) {
             loading = false;
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdLoadFailed(errorCode);
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdLoadFailed(errorCode);
+              }
+            });
           }
 
           @Override
           public void onAdShown() {
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdShown();
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdShown();
+              }
+            });
           }
 
           @Override
           public void onAdShowFailed(final int errorCode) {
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdShowFailed(errorCode);
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdShowFailed(errorCode);
+              }
+            });
           }
 
           @Override
           public void onAdClicked() {
-            new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    callback.onAdClicked();
-                  }
-                })
-                .start();
+            Utils.execute(new Runnable() {
+              @Override
+              public void run() {
+                callback.onAdClicked();
+              }
+            });
           }
         });
   }

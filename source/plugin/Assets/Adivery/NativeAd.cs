@@ -7,8 +7,8 @@ namespace AdiveryUnity
     {
         private readonly AndroidJavaObject adObject;
 
-        public event EventHandler<int> OnAdShowFailed;
-        public event EventHandler<int> OnAdLoadFailed;
+        public event EventHandler OnAdShowFailed;
+        public event EventHandler OnAdLoadFailed;
         public event EventHandler OnAdClicked;
         public event EventHandler OnAdShown;
         public event EventHandler OnAdLoaded;
@@ -28,47 +28,51 @@ namespace AdiveryUnity
 
         public void LoadAd()
         {
-            adObject?.Call("loadAd");
+            if (adObject != null) {
+                adObject.Call("loadAd");
+            }
         }
 
         public bool IsLoaded()
         {
-            return adObject?.Call<bool>("isLoaded") ?? false;
+            return adObject != null ? adObject.Call<bool>("isLoaded") : false;
         }
 
         public void Destroy()
         {
-            adObject?.Call("destroy");
+            if (adObject != null) {
+                adObject.Call("destroy");
+            }
         }
 
         public string GetHeadline()
         {
-            return adObject?.Call<string>("getHeadline");
+            return adObject != null ? adObject.Call<string>("getHeadline") : null;
         }
 
         public string GetDescription()
         {
-            return adObject?.Call<string>("getDescription");
+            return adObject != null ? adObject.Call<string>("getDescription") : null;
         }
 
         public string GetAdvertiser()
         {
-            return adObject?.Call<string>("getAdvertiser");
+            return adObject != null ? adObject.Call<string>("getAdvertiser") : null;
         }
 
         public string GetCallToAction()
         {
-            return adObject?.Call<string>("getCallToAction");
+            return adObject != null ? adObject.Call<string>("getCallToAction") : null;
         }
 
         public Texture2D GetImageTexture2D()
         {
-            return GetTexture2DFromByteArray(adObject?.Call<byte[]>("getImage"));
+            return GetTexture2DFromByteArray(adObject != null ? adObject.Call<byte[]>("getImage") : null);
         }
 
         public Texture2D GetIconTexture2D()
         {
-            return GetTexture2DFromByteArray(adObject?.Call<byte[]>("getIcon"));
+            return GetTexture2DFromByteArray(adObject != null ? adObject.Call<byte[]>("getIcon") : null);
         }
 
         private static Texture2D GetTexture2DFromByteArray(byte[] img)
@@ -84,12 +88,16 @@ namespace AdiveryUnity
 
         internal void RecordImpression()
         {
-            adObject?.Call("recordImpression");
+            if (adObject != null) {
+                adObject.Call("recordImpression");
+            }
         }
 
         public void RecordClick()
         {
-            adObject?.Call("recordClick");
+            if (adObject != null) {
+                adObject.Call("recordClick");
+            }
         }
 
         internal class NativeCallbackImpl : NativeCallback
@@ -101,19 +109,23 @@ namespace AdiveryUnity
                 this.ad = ad;
             }
 
-            public override void onAdShowFailed(int errorCode)
+            public override void onAdShowFailed()
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    ad.OnAdShowFailed?.Invoke(this, errorCode);
+                    if (ad.OnAdShowFailed != null) {
+                        ad.OnAdShowFailed.Invoke(this, null);
+                    }
                 });
             }
 
-            public override void onAdLoadFailed(int errorCode)
+            public override void onAdLoadFailed()
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    ad.OnAdLoadFailed?.Invoke(this, errorCode);
+                    if (ad.OnAdLoadFailed != null) {
+                        ad.OnAdLoadFailed.Invoke(this, null);
+                    }
                 });
             }
 
@@ -121,7 +133,9 @@ namespace AdiveryUnity
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    ad.OnAdClicked?.Invoke(this, null);
+                    if (ad.OnAdClicked != null) {
+                        ad.OnAdClicked.Invoke(this, null);
+                    }
                 });
             }
 
@@ -129,7 +143,9 @@ namespace AdiveryUnity
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    ad.OnAdShown?.Invoke(this, null);
+                    if (ad.OnAdShown != null) {
+                        ad.OnAdShown.Invoke(this, null);
+                    }
                 });
             }
 
@@ -138,7 +154,9 @@ namespace AdiveryUnity
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
                     ad.RecordImpression();
-                    ad.OnAdLoaded?.Invoke(this, null);
+                    if (ad.OnAdLoaded != null) {
+                        ad.OnAdLoaded.Invoke(this, null);
+                    }
                 });
             }
         }

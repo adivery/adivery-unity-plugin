@@ -242,12 +242,12 @@ public class BallController : MonoBehaviour
         LogEvent("OnRewardedAdLoaded");
     }
 
-    private void OnRewardedAdLoadFailed(object sender, int e)
+    private void OnRewardedAdLoadFailed(object caller, EventArgs args)
     {
         LogEvent("OnRewardedAdLoadFailed");
     }
 
-    private void OnRewardedAdShowFailed(object sender, int e)
+    private void OnRewardedAdShowFailed(object caller, EventArgs args)
     {
         LogEvent("OnRewardedAdShowFailed");
     }

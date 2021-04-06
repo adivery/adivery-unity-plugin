@@ -8,11 +8,11 @@ namespace AdiveryUnity
 
         public virtual void onAdLoaded() { }
 
-        public virtual void onAdLoadFailed(int errorCode) { }
+        public virtual void onAdLoadFailed() { }
 
         public virtual void onAdShown() { }
 
-        public virtual void onAdShowFailed(int errorCode) { }
+        public virtual void onAdShowFailed() { }
 
         public virtual void onAdClicked() { }
 

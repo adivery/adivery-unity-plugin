@@ -59,12 +59,12 @@ public class AdsController : MonoBehaviour
         interstitial.Show();
     }
 
-    private void OnInterstitialAdLoadFailed(object sender, int e)
+    private void OnInterstitialAdLoadFailed(object caller, EventArgs args)
     {
         LogEvent("OnInterstitialAdLoadFailed");
     }
 
-    private void OnInterstitialAdShowFailed(object sender, int e)
+    private void OnInterstitialAdShowFailed(object caller, EventArgs args)
     {
         LogEvent("OnInterstitialAdShowFailed");
     }

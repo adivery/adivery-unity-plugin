@@ -6,7 +6,7 @@ import com.adivery.sdk.Adivery;
 import com.adivery.sdk.unified.AdiveryListener;
 
 public class FullScreenAd {
-  public void setFullScreenCallback(final FullScreenAdCallback callback){
+  public void setListener(final FullScreenAdCallback callback){
     Adivery.addListener(new AdiveryListener(){
       @Override
       public void onError(final String placementId, final String reason) {

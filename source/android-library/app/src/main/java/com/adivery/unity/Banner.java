@@ -202,9 +202,9 @@ public class Banner {
           public void run() {
             if (bannerContainer != null) {
               ViewParent parentView = bannerContainer.getParent();
-//              if (parentView instanceof ViewGroup) {
-//                ((ViewGroup) parentView).removeView(bannerContainer);
-//              }
+              if (parentView instanceof ViewGroup) {
+                ((ViewGroup) parentView).removeView(bannerContainer);
+              }
             }
           }
         });

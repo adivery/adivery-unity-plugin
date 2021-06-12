@@ -4,17 +4,21 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
+import com.adivery.sdk.AdMobNativeAd;
 import com.adivery.sdk.Adivery;
 import com.adivery.sdk.AdiveryNativeAd;
+import com.adivery.sdk.AdiveryNativeAdView;
 import com.adivery.sdk.AdiveryNativeCallback;
 import java.io.ByteArrayOutputStream;
+import com.adivery.sdk.NativeAd;
 
 public class Native {
 
   private final String placementId;
   private final Activity activity;
   private final NativeCallback callback;
-  private AdiveryNativeAd loadedAd;
+  private NativeAd loadedAd;
   private boolean loading = false;
 
   private byte[] iconBytes;
@@ -38,26 +42,39 @@ public class Native {
         placementId,
         new AdiveryNativeCallback() {
           @Override
-          public void onAdLoaded(AdiveryNativeAd ad) {
+          public void onAdLoaded(final NativeAd ad) {
             loadedAd = ad;
-            loading = false;
-            Utils.execute(new Runnable() {
-              @Override
-              public void run() {
-                iconBytes = getDrawableBytes(loadedAd.getIcon());
-                imageBytes = getDrawableBytes(loadedAd.getImage());
-                callback.onAdLoaded();
-              }
-            });
+            if (ad instanceof AdiveryNativeAd) {
+              loading = false;
+              Utils.execute(new Runnable() {
+                @Override
+                public void run() {
+                  iconBytes = getDrawableBytes(((AdiveryNativeAd)loadedAd).getIcon());
+                  imageBytes = getDrawableBytes(((AdiveryNativeAd)loadedAd).getImage());
+                  callback.onAdLoaded();
+                }
+              });
+            } else {
+              Utils.execute(new Runnable() {
+                @Override
+                public void run() {
+                  AdMobNativeAd nativeAd = (AdMobNativeAd) ad;
+                  iconBytes = getDrawableBytes(nativeAd.getIcon());
+                  imageBytes = getDrawableBytes(nativeAd.getImage());
+                  callback.onAdLoaded();
+                }
+              });
+            }
+
           }
 
           @Override
-          public void onAdLoadFailed(final int errorCode) {
+          public void onAdLoadFailed(final String reason) {
             loading = false;
             Utils.execute(new Runnable() {
               @Override
               public void run() {
-                callback.onAdLoadFailed(errorCode);
+                callback.onError(reason);
               }
             });
           }
@@ -73,11 +90,11 @@ public class Native {
           }
 
           @Override
-          public void onAdShowFailed(final int errorCode) {
+          public void onAdShowFailed(final String reason) {
             Utils.execute(new Runnable() {
               @Override
               public void run() {
-                callback.onAdShowFailed(errorCode);
+                callback.onError(reason);
               }
             });
           }
@@ -109,19 +126,39 @@ public class Native {
   }
 
   public String getHeadline() {
-    return loadedAd != null ? loadedAd.getHeadline() : null;
+    if (loadedAd instanceof AdiveryNativeAd){
+      return ((AdiveryNativeAd) loadedAd).getHeadline();
+    } else if (loadedAd instanceof AdMobNativeAd){
+      return ((AdMobNativeAd) loadedAd).getHeadline();
+    }
+    return null;
   }
 
   public String getDescription() {
-    return loadedAd != null ? loadedAd.getDescription() : null;
+    if (loadedAd instanceof AdiveryNativeAd){
+      return ((AdiveryNativeAd) loadedAd).getDescription();
+    } else if (loadedAd instanceof AdMobNativeAd){
+      return ((AdMobNativeAd) loadedAd).getDescription();
+    }
+    return null;
   }
 
   public String getAdvertiser() {
-    return loadedAd != null ? loadedAd.getAdvertiser() : null;
+    if (loadedAd instanceof AdiveryNativeAd){
+      return ((AdiveryNativeAd) loadedAd).getAdvertiser();
+    } else if (loadedAd instanceof AdMobNativeAd){
+      return ((AdMobNativeAd) loadedAd).getAdvertiser();
+    }
+    return null;
   }
 
   public String getCallToAction() {
-    return loadedAd != null ? loadedAd.getCallToAction() : null;
+    if (loadedAd instanceof AdiveryNativeAd){
+      return ((AdiveryNativeAd) loadedAd).getCallToAction();
+    } else if (loadedAd instanceof AdMobNativeAd){
+      return ((AdMobNativeAd) loadedAd).getCallToAction();
+    }
+    return null;
   }
 
   public byte[] getIcon() {
@@ -133,14 +170,16 @@ public class Native {
   }
 
   public void recordImpression() {
-    if (loadedAd != null) {
-      loadedAd.recordImpression();
+    if (loadedAd instanceof AdiveryNativeAd){
+      ((AdiveryNativeAd) loadedAd).recordImpression();
+    } else if (loadedAd instanceof AdMobNativeAd){
+      ((AdMobNativeAd) loadedAd).recordImpression();
     }
   }
 
   public void recordClick() {
-    if (loadedAd != null) {
-      loadedAd.recordClick();
+    if (loadedAd instanceof AdiveryNativeAd){
+      ((AdiveryNativeAd) loadedAd).recordClick();
     }
   }
 

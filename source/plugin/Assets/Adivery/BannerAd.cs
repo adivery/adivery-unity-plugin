@@ -15,8 +15,7 @@ namespace AdiveryUnity
         private readonly AndroidJavaObject adObject;
 
         public event EventHandler OnAdLoaded;
-        public event EventHandler OnAdLoadFailed;
-        public event EventHandler OnAdShowFailed;
+        public event EventHandler<string> OnError;
         public event EventHandler OnAdClicked;
 
         public BannerAd(string placementId, int bannerType, int bannerPosition)
@@ -36,35 +35,27 @@ namespace AdiveryUnity
 
         public void LoadAd()
         {
-            if (adObject != null) {
-                adObject.Call("loadAd");
-            }
+            adObject?.Call("loadAd");
         }
 
         public bool IsLoaded()
         {
-            return adObject != null ? adObject.Call<bool>("isLoaded") : false;
+            return adObject?.Call<bool>("isLoaded") ?? false;
         }
 
         public void Show()
         {
-            if (adObject != null) {
-                adObject.Call("show");
-            }
+            adObject.Call("show");
         }
 
         public void Hide()
         {
-            if (adObject != null) {
-                adObject.Call("hide");
-            }
+            adObject?.Call("hide");
         }
 
         public void Destroy()
         {
-            if (adObject != null) {
-                adObject.Call("destroy");
-            }
+            adObject?.Call("destroy");
         }
 
         internal class BannerCallbackImpl : BannerCallback
@@ -80,29 +71,15 @@ namespace AdiveryUnity
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    if (ad.OnAdLoaded != null) {
-                        ad.OnAdLoaded.Invoke(this, null);
-                    }
+                    ad.OnAdLoaded?.Invoke(this, null);
                 });
             }
 
-            public override void onAdLoadFailed()
+            public override void onError(string reason)
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    if (ad.OnAdLoadFailed != null) {
-                        ad.OnAdLoadFailed.Invoke(this, null);
-                    }
-                });
-            }
-
-            public override void onAdShowFailed()
-            {
-                AdiveryEventExecutor.ExecuteInUpdate(() =>
-                {
-                    if (ad.OnAdShowFailed != null) {
-                        ad.OnAdShowFailed.Invoke(this, null);
-                    }
+                    ad.OnError?.Invoke(this, reason);
                 });
             }
 
@@ -110,9 +87,7 @@ namespace AdiveryUnity
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    if (ad.OnAdClicked != null) {
-                        ad.OnAdClicked.Invoke(this, null);
-                    }
+                    ad.OnAdClicked?.Invoke(this, null);
                 });
             }
         }

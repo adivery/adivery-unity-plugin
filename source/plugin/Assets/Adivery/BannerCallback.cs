@@ -8,9 +8,7 @@ namespace AdiveryUnity
 
         public virtual void onAdLoaded() { }
 
-        public virtual void onAdLoadFailed() { }
-
-        public virtual void onAdShowFailed() { }
+        public virtual void onError(string reason) { }
 
         public virtual void onAdClicked() { }
     }

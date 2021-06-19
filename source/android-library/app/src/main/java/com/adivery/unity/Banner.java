@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
+import com.adivery.sdk.AdiveryAdListener;
 import com.adivery.sdk.AdiveryBannerAdView;
 import com.adivery.sdk.BannerSize;
 
@@ -72,7 +73,7 @@ public class Banner {
         adView = new AdiveryBannerAdView(activity);
         adView.setBannerSize(bannerType);
         adView.setPlacementId(placementId);
-        adView.setBannerAdListener(new AdiveryBannerAdView.AdiveryBannerAdListener() {
+        adView.setBannerAdListener(new AdiveryAdListener() {
           @Override
           public void onAdLoaded() {
             loaded = true;
@@ -95,7 +96,7 @@ public class Banner {
           }
 
           @Override
-          public void onClick() {
+          public void onAdClicked() {
             Utils.execute(new Runnable() {
               @Override
               public void run() {

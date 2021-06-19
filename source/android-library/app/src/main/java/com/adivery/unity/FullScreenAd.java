@@ -1,9 +1,7 @@
 package com.adivery.unity;
 
-import android.app.Activity;
-
 import com.adivery.sdk.Adivery;
-import com.adivery.sdk.unified.AdiveryListener;
+import com.adivery.sdk.AdiveryListener;
 
 public class FullScreenAd {
   public void setListener(final FullScreenAdCallback callback){

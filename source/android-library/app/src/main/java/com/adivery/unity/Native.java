@@ -5,13 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.adivery.sdk.AdMobNativeAd;
 import com.adivery.sdk.Adivery;
-import com.adivery.sdk.AdiveryNativeAd;
-import com.adivery.sdk.AdiveryNativeAdView;
 import com.adivery.sdk.AdiveryNativeCallback;
 import java.io.ByteArrayOutputStream;
 import com.adivery.sdk.NativeAd;
+import com.adivery.sdk.networks.adivery.AdiveryNativeAd;
+import com.adivery.sdk.networks.admob.AdMobNativeAd;
 
 public class Native {
 

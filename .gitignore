@@ -4,3 +4,4 @@ unity.log
 *.apk
 Adivery.unitypackage
 sample_mapping.txt
+.DS_Store

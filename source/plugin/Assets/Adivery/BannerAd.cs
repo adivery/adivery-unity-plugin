@@ -25,7 +25,7 @@ namespace AdiveryUnity
                 return;
             }
 
-            adObject = new AndroidJavaObject("com.adivery.unity.Banner",
+            adObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.Banner",
                 Adivery.GetAndroidActivity(),
                 placementId,
                 bannerType,

@@ -19,7 +19,7 @@ namespace AdiveryUnity
                 return;
             }
 
-            adObject = new AndroidJavaObject("com.adivery.unity.Native",
+            adObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.Native",
                 Adivery.GetAndroidActivity(),
                 placementId,
                 new NativeCallbackImpl(this));

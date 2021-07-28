@@ -15,7 +15,13 @@ public class AdsController : MonoBehaviour
     string nativePlacement = "ff454979-efaa-4ab8-b084-7db19e995d9b";
     NativeAd native;
     BannerAd banner, largeBanner, mediumRectangle;
+    AdiveryListener listener;
 
+
+    private void OnDestroy()
+    {
+        Adivery.RemoveListener(listener);
+    }
 
     // Use this for initialization
     void Start()
@@ -23,12 +29,19 @@ public class AdsController : MonoBehaviour
         Debug.Log("start called");
         Adivery.SetLoggingEnabled(true);
         Adivery.Configure(appID);
+        Adivery.Configure(appID);
 
         Adivery.PrepareInterstitialAd(interstitialPlacement);
         Adivery.PrepareRewardedAd(rewardedPlacement);
 
-        Adivery.OnError += OnError;
-        Adivery.OnRewardedAdClosed += OnReardedClosed;
+        listener = new AdiveryListener();
+
+        listener.OnError += OnError;
+        listener.OnRewardedAdClosed += OnReardedClosed;
+        listener.OnRewardedAdClosed += OnReardedClosed;
+        listener.OnInterstitialAdLoaded += OnInterstitialLoaded;
+
+        Adivery.AddListener(listener);
 
         initRewarded();
 
@@ -40,9 +53,15 @@ public class AdsController : MonoBehaviour
         GameObject.Find("native").GetComponent<Button>().onClick.AddListener(delegate () { ShowNativeAd(); });
     }
 
+    private void OnInterstitialLoaded(object caller, string placement)
+    {
+        Debug.Log("Interstitial loaded");
+    }
+
     public void OnReardedClosed(object caller, AdiveryReward reward)
     {
         Debug.Log("Adivery reward: " + reward.IsRewarded);
+        Adivery.RemoveListener(listener);
     }
 
     public void OnError(object caller, AdiveryError error)

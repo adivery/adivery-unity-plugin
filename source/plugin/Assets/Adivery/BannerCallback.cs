@@ -4,7 +4,7 @@ namespace AdiveryUnity
 {
     internal class BannerCallback : AndroidJavaProxy
     {
-        public BannerCallback() : base("com.adivery.unity.BannerCallback") { }
+        public BannerCallback() : base("com.adivery.sdk.plugins.unity.BannerCallback") { }
 
         public virtual void onAdLoaded() { }
 

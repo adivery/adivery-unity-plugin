@@ -4,7 +4,7 @@ namespace AdiveryUnity
 {
     internal class NativeCallback : AndroidJavaProxy
     {
-        public NativeCallback() : base("com.adivery.unity.NativeCallback") { }
+        public NativeCallback() : base("com.adivery.sdk.plugins.unity.NativeCallback") { }
 
         public virtual void onError(string reason) { }
 

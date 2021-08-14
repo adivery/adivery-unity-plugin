@@ -15,6 +15,9 @@ project.ext {
     if (unity_exe == null || unity_exe.isEmpty()) {
         unity_exe = System.getenv("UNITY_EXE")
     }
+    if (unity_exe == null || unity_exe.isEmpty()) {
+        unity_exe ='/Applications/Unity/Unity.app/Contents/MacOS/Unity'
+    }
 
     pluginSource = file('source/plugin').absolutePath
     exportPath = file('Adivery.unitypackage').absolutePath

@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
+using System;
+using System.Linq;
 
 namespace AdiveryUnity
 {
     public class Adivery
     {
+        internal static AndroidJavaObject adiveryListenreObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.FullScreenAd");
+
         internal static bool IsAdiverySupported()
         {
             return Application.platform == RuntimePlatform.Android;
@@ -23,7 +27,7 @@ namespace AdiveryUnity
 
         internal static AndroidJavaObject GetAdiveryClass()
         {
-            return new AndroidJavaClass("com.adivery.sdk.Adivery");
+            return new AndroidJavaClass("com.adivery.sdk.plugins.unity.AdiveryUnity");
         }
 
         public static void Configure(string appId)
@@ -45,6 +49,60 @@ namespace AdiveryUnity
             }
 
             GetAdiveryClass().CallStatic("setLoggingEnabled", enabled);
+        }
+
+        public static void PrepareInterstitialAd(string placementId)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            GetAdiveryClass().CallStatic("prepareInterstitialAd", GetAndroidActivity(), placementId);
+        }
+
+        public static void PrepareRewardedAd(string placementId)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            GetAdiveryClass().CallStatic("prepareRewardedAd", GetAndroidActivity(), placementId);
+        }
+
+        internal static void AddListener(AdiveryListener listener)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            listener.adiveryListenreObject.Call("setListener", listener);
+        }
+
+        internal static void RemoveListener(AdiveryListener listener)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            listener.adiveryListenreObject.Call("removeListener");
+        }
+
+        public static void Show(string placement)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            GetAdiveryClass().CallStatic("showAd", placement);
+        }
+
+        public static Boolean IsLoaded(string placementId)
+        {
+            if (!IsAdiverySupported())
+            {
+                return false;
+            }
+            return GetAdiveryClass().CallStatic<bool>("isLoaded", placementId);
         }
     }
 }

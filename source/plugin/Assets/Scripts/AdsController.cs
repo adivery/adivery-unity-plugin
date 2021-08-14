@@ -6,8 +6,8 @@ using System;
 
 public class AdsController : MonoBehaviour
 {
-    string appID = "59c36ce3-7125-40a7-bd34-144e6906c796";
-    string rewardedPlacement = "16414bae-368e-4904-b259-c5b89362206d";
+    string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
+    string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
     string interstitialPlacement = "38b301f2-5e0c-4776-b671-c6b04a612311";
     string bannerPlacement = "a355be22-970a-46b8-bc52-f0a59c4ded05";
     string largeBannerPlacement = "90717d2a-dad1-4ac1-8e71-c4d741a225bb";

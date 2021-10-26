@@ -8,11 +8,11 @@ public class AdsController : MonoBehaviour
 {
     string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
     string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
-    string interstitialPlacement = "38b301f2-5e0c-4776-b671-c6b04a612311";
-    string bannerPlacement = "a355be22-970a-46b8-bc52-f0a59c4ded05";
-    string largeBannerPlacement = "90717d2a-dad1-4ac1-8e71-c4d741a225bb";
-    string mediumRectanglePlacement = "850d771f-dd47-4b2e-832c-ad1ad70d9266";
-    string nativePlacement = "ff454979-efaa-4ab8-b084-7db19e995d9b";
+    string interstitialPlacement = "0045a4aa-1498-4790-9eed-6e33ac870e5f";
+    string bannerPlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
+    string largeBannerPlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
+    string mediumRectanglePlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
+    string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
     NativeAd native;
     BannerAd banner, largeBanner, mediumRectangle;
     AdiveryListener listener;
@@ -29,7 +29,6 @@ public class AdsController : MonoBehaviour
         Debug.Log("start called");
         Adivery.SetLoggingEnabled(true);
         Adivery.Configure(appID);
-        Adivery.Configure(appID);
 
         Adivery.PrepareInterstitialAd(interstitialPlacement);
         Adivery.PrepareRewardedAd(rewardedPlacement);
@@ -37,7 +36,6 @@ public class AdsController : MonoBehaviour
         listener = new AdiveryListener();
 
         listener.OnError += OnError;
-        listener.OnRewardedAdClosed += OnReardedClosed;
         listener.OnRewardedAdClosed += OnReardedClosed;
         listener.OnInterstitialAdLoaded += OnInterstitialLoaded;
 
@@ -61,7 +59,6 @@ public class AdsController : MonoBehaviour
     public void OnReardedClosed(object caller, AdiveryReward reward)
     {
         Debug.Log("Adivery reward: " + reward.IsRewarded);
-        Adivery.RemoveListener(listener);
     }
 
     public void OnError(object caller, AdiveryError error)

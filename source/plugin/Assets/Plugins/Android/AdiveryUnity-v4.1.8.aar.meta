@@ -1,10 +1,5 @@
 fileFormatVersion: 2
-guid: 93324a471a6d44bb8297d17d8b191e52
-labels:
-- gvh
-- gvh_dotnet-3.5
-- gvh_version-8.0.0
-- gvhp_exportpath-Parse/Plugins/Unity.Tasks.dll
+guid: 9aa065a24bc3b744cbd56e5deb78694d
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -17,6 +12,11 @@ PluginImporter:
   validateReferences: 1
   platformData:
   - first:
+      Android: Android
+    second:
+      enabled: 1
+      settings: {}
+  - first:
       Any: 
     second:
       enabled: 0
@@ -27,12 +27,6 @@ PluginImporter:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-  - first:
-      Windows Store Apps: WindowsStoreApps
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
   userData: 
   assetBundleName: 
   assetBundleVariant: 

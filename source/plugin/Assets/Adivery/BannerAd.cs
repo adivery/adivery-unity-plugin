@@ -15,8 +15,7 @@ namespace AdiveryUnity
         private readonly AndroidJavaObject adObject;
 
         public event EventHandler OnAdLoaded;
-        public event EventHandler<int> OnAdLoadFailed;
-        public event EventHandler<int> OnAdShowFailed;
+        public event EventHandler<string> OnError;
         public event EventHandler OnAdClicked;
 
         public BannerAd(string placementId, int bannerType, int bannerPosition)
@@ -26,7 +25,7 @@ namespace AdiveryUnity
                 return;
             }
 
-            adObject = new AndroidJavaObject("com.adivery.unity.Banner",
+            adObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.Banner",
                 Adivery.GetAndroidActivity(),
                 placementId,
                 bannerType,
@@ -46,7 +45,7 @@ namespace AdiveryUnity
 
         public void Show()
         {
-            adObject?.Call("show");
+            adObject.Call("show");
         }
 
         public void Hide()
@@ -76,19 +75,11 @@ namespace AdiveryUnity
                 });
             }
 
-            public override void onAdLoadFailed(int errorCode)
+            public override void onError(string reason)
             {
                 AdiveryEventExecutor.ExecuteInUpdate(() =>
                 {
-                    ad.OnAdLoadFailed?.Invoke(this, errorCode);
-                });
-            }
-
-            public override void onAdShowFailed(int errorCode)
-            {
-                AdiveryEventExecutor.ExecuteInUpdate(() =>
-                {
-                    ad.OnAdShowFailed?.Invoke(this, errorCode);
+                    ad.OnError?.Invoke(this, reason);
                 });
             }
 

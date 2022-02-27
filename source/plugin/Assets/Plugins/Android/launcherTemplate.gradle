@@ -4,8 +4,8 @@ apply plugin: 'com.android.application'
 
 dependencies {
     implementation project(':unityLibrary')
-    implementation 'com.google.android.gms:play-services-ads:19.5.0'
-}
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.10"
+    }
 
 android {
     compileSdkVersion **APIVERSION**
@@ -48,7 +48,7 @@ android {
             useProguard **PROGUARD_RELEASE**
             proguardFiles getDefaultProguardFile('proguard-android.txt')**SIGNCONFIG**
         }
-    }**PACKAGING_OPTIONS****SPLITS**
+    }**PACKAGING_OPTIONS****PLAY_ASSET_PACKS****SPLITS**
 **BUILT_APK_LOCATION**
     bundle {
         language {

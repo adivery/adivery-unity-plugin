@@ -2,7 +2,7 @@ on: [push]
 
 jobs:
   extract_unity_package:
-    runs-on: windows-latest
+    runs-on: ubuntu-18.04
     name: extract_unity_package
     steps:
     - name: Checkout

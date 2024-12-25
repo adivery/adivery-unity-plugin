@@ -8,16 +8,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Extract unity package
-        id: extract_unity_package
-        uses: FrostBanditTeam/extract-unity-package-action@1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
         with:
-          #Specify the unity project path, relative to the repo root.
-          unityProjectPath: './source/plugin/Assets/Adivery'
-          #Optional: Set the directory to package, relative to the project.
-          #packagePath: 'Assets'
-          #Optional: Set the output path for the package.
-          #outputPackagePath: './artifacts/output.unitypackage'
+          distribution: 'corretto'
+          java-version: '11'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      # Step 2: Install dependencies
+      - name: Install required dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk-3-0 libnss3 libasound2 libx11-xcb1
+
+      # Step 3: Download Unity Editor
+      - name: Download Unity Editor
+        run: |
+          wget https://download.unity3d.com/download_unity/b2e806cf271c/LinuxEditorInstaller/Unity-6000.0.32f1.tar.xz -O Unity.tar.xz
+
+      # Step 4: Extract Unity Editor
+      - name: Extract Unity Editor
+        run: |
+          sudo mkdir -p /opt/unity
+          sudo tar -xf Unity.tar.xz -C /opt/unity
+
+      # Step 5: Add Unity to PATH
+      - name: Add Unity to PATH
+        run: |
+          echo "export PATH=/opt/unity/Unity-6000.0.32f1/Editor:\$PATH" >> $GITHUB_ENV
+
+      # Step 6: Verify Unity Installation
+      - name: Check Unity version
+        run: |
+          /opt/unity/Unity-6000.0.32f1/Editor/Unity --version
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

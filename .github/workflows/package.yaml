@@ -37,12 +37,17 @@ jobs:
       # Step 5: Add Unity to PATH
       - name: Add Unity to PATH
         run: |
-          echo "export PATH=/opt/unity/Unity-6000.0.32f1/Editor:\$PATH" >> $GITHUB_ENV
+          echo "export PATH=/opt/unity/Editor:\$PATH" >> $GITHUB_ENV
 
       # Step 6: Verify Unity Installation
       - name: Check Unity version
         run: |
-          /opt/unity/Unity-6000.0.32f1/Editor/Unity --version
+          /opt/unity/Editor/Unity --version
+
+      - name: Gradle export package
+        run: ./gradlew exportPackage
+        env:
+          UNITY_EXE: "/opt/unity/Editor/Unity"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

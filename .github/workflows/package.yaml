@@ -44,6 +44,9 @@ jobs:
         run: |
           /opt/unity/Editor/Unity --version
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Gradle export package
         run: ./gradlew exportPackage
         env:

@@ -30,6 +30,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+.idea
 
 adivery-unity.aar
 adivery-unity.aar.meta

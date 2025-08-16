@@ -6,7 +6,7 @@ apply from: '../shared/keepUnitySymbols.gradle'
 
 dependencies {
     implementation project(':unityLibrary')
-    implementation "com.adivery:sdk:4.8.4"
+    implementation "com.adivery:sdk:4.8.5"
     }
 
 android {

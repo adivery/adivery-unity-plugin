@@ -19,6 +19,13 @@ namespace AdiveryUnity
         public bool IsRewarded;
     }
 
+    public class AdiveryOfferWallReward : EventArgs
+    {
+        public string PlacementId;
+        public string Currency;
+        public int RewardAmount;
+    }
+
     public class AdiveryListener : AndroidJavaProxy
     {
         internal readonly AndroidJavaObject adiveryListenerObject;
@@ -170,6 +177,91 @@ namespace AdiveryUnity
             }
         }
 
+        private EventHandler<string> _onOfferWallAdLoaded;
+        public event EventHandler<string> OnOfferWallAdLoaded
+        {
+            add
+            {
+                if (_onOfferWallAdLoaded == null || !_onOfferWallAdLoaded.GetInvocationList().Contains(value))
+                {
+                    _onOfferWallAdLoaded += value;
+                }
+            }
+
+            remove
+            {
+                _onOfferWallAdLoaded -= value;
+            }
+        }
+
+        private EventHandler<string> _onOfferWallAdShown;
+        public event EventHandler<string> OnOfferWallAdShown
+        {
+            add
+            {
+                if (_onOfferWallAdShown == null || !_onOfferWallAdShown.GetInvocationList().Contains(value))
+                {
+                    _onOfferWallAdShown += value;
+                }
+            }
+
+            remove
+            {
+                _onOfferWallAdShown -= value;
+            }
+        }
+
+        private EventHandler<string> _onOfferWallAdClicked;
+        public event EventHandler<string> OnOfferWallAdClicked
+        {
+            add
+            {
+                if (_onOfferWallAdClicked == null || !_onOfferWallAdClicked.GetInvocationList().Contains(value))
+                {
+                    _onOfferWallAdClicked += value;
+                }
+            }
+
+            remove
+            {
+                _onOfferWallAdClicked -= value;
+            }
+        }
+
+        private EventHandler<string> _onOfferWallAdClosed;
+        public event EventHandler<string> OnOfferWallAdClosed
+        {
+            add
+            {
+                if (_onOfferWallAdClosed == null || !_onOfferWallAdClosed.GetInvocationList().Contains(value))
+                {
+                    _onOfferWallAdClosed += value;
+                }
+            }
+
+            remove
+            {
+                _onOfferWallAdClosed -= value;
+            }
+        }
+
+        private EventHandler<AdiveryOfferWallReward> _onOfferWallMissionRewarded;
+        public event EventHandler<AdiveryOfferWallReward> OnOfferWallMissionRewarded
+        {
+            add
+            {
+                if (_onOfferWallMissionRewarded == null || !_onOfferWallMissionRewarded.GetInvocationList().Contains(value))
+                {
+                    _onOfferWallMissionRewarded += value;
+                }
+            }
+
+            remove
+            {
+                _onOfferWallMissionRewarded -= value;
+            }
+        }
+
         public AdiveryListener() : base("com.adivery.sdk.plugins.unity.FullScreenAdCallback")
         {
             if (!Adivery.IsAdiverySupported())
@@ -258,6 +350,50 @@ namespace AdiveryUnity
                 _onRewardedAdClosed?.Invoke(this, reward);
             });
 
+        }
+
+        public virtual void onOfferWallAdLoaded(string placementId)
+        {
+            AdiveryEventExecutor.ExecuteInUpdate(() =>
+            {
+                _onOfferWallAdLoaded?.Invoke(this, placementId);
+            });
+        }
+
+        public virtual void onOfferWallAdShown(string placementId)
+        {
+            AdiveryEventExecutor.ExecuteInUpdate(() =>
+            {
+                _onOfferWallAdShown?.Invoke(this, placementId);
+            });
+        }
+
+        public virtual void onOfferWallAdClicked(string placementId)
+        {
+            AdiveryEventExecutor.ExecuteInUpdate(() =>
+            {
+                _onOfferWallAdClicked?.Invoke(this, placementId);
+            });
+        }
+
+        public virtual void onOfferWallAdClosed(string placementId)
+        {
+            AdiveryEventExecutor.ExecuteInUpdate(() =>
+            {
+                _onOfferWallAdClosed?.Invoke(this, placementId);
+            });
+        }
+
+        public virtual void onOfferWallMissionRewarded(string placementId, string currency, int rewardAmount)
+        {
+            AdiveryEventExecutor.ExecuteInUpdate(() =>
+            {
+                AdiveryOfferWallReward reward = new AdiveryOfferWallReward();
+                reward.PlacementId = placementId;
+                reward.Currency = currency;
+                reward.RewardAmount = rewardAmount;
+                _onOfferWallMissionRewarded?.Invoke(this, reward);
+            });
         }
     }
 

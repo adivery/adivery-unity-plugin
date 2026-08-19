@@ -10,12 +10,14 @@ public class AdsController : MonoBehaviour
     [SerializeField] private string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
     [SerializeField] private string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
     [SerializeField] private string interstitialPlacement = "de5db046-765d-478f-bb2e-30dc2eaf3f51";
+    [SerializeField] private string offerWallPlacement = "8ec21007-19e6-4e71-a156-9d3f326a839a";
     [SerializeField] private string bannerPlacement = "5f2c4c86-a6ec-4735-9a44-f881fe40789f";
     [SerializeField] private string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
 
     [Header("UI - Buttons")]
     [SerializeField] private Button rewardedButton;
     [SerializeField] private Button interstitialButton;
+    [SerializeField] private Button offerWallButton;
     [SerializeField] private Button bannerButton;
     [SerializeField] private Button largeBannerButton;
     [SerializeField] private Button mediumRectangleButton;
@@ -67,6 +69,11 @@ public class AdsController : MonoBehaviour
         listener.OnError += OnError;
         listener.OnInterstitialAdLoaded += OnInterstitialLoaded;
         listener.OnRewardedAdClicked += OnRewardedClicked;
+        listener.OnOfferWallAdLoaded += OnOfferWallLoaded;
+        listener.OnOfferWallAdShown += OnOfferWallShown;
+        listener.OnOfferWallAdClicked += OnOfferWallClicked;
+        listener.OnOfferWallAdClosed += OnOfferWallClosed;
+        listener.OnOfferWallMissionRewarded += OnOfferWallMissionRewarded;
 
         rewardedListener = new AdiveryListener();
         rewardedListener.OnError += OnError;
@@ -83,6 +90,7 @@ public class AdsController : MonoBehaviour
 
         rewardedButton.onClick.AddListener(ShowRewardedAd);
         interstitialButton.onClick.AddListener(ShowInterstitial);
+        offerWallButton.onClick.AddListener(LoadOfferWallAd);
         bannerButton.onClick.AddListener(ShowBannerAd);
         largeBannerButton.onClick.AddListener(ShowLargeBanner);
         mediumRectangleButton.onClick.AddListener(ShowMediumRectangle);
@@ -115,6 +123,34 @@ public class AdsController : MonoBehaviour
     public void OnError(object caller, AdiveryError error)
     {
         Debug.Log("placement: " + error.PlacementId + " error: " + error.Reason);
+    }
+
+    private void OnOfferWallLoaded(object caller, string placement)
+    {
+        Debug.Log("OfferWall loaded");
+        Adivery.Show(placement);
+    }
+
+    private void OnOfferWallShown(object caller, string placement)
+    {
+        Debug.Log("OfferWall shown");
+    }
+
+    private void OnOfferWallClicked(object caller, string placement)
+    {
+        Debug.Log("OfferWall clicked");
+    }
+
+    private void OnOfferWallClosed(object caller, string placement)
+    {
+        Debug.Log("OfferWall closed");
+    }
+
+    public void OnOfferWallMissionRewarded(object caller, AdiveryOfferWallReward reward)
+    {
+        Debug.Log("OfferWall mission rewarded: " + reward.RewardAmount + " " + reward.Currency);
+        score += reward.RewardAmount;
+        rewardText.text = "Reward: " + score;
     }
 
     public void OnRewardedAdLoadFailed(object caller, string args)
@@ -216,5 +252,11 @@ public class AdsController : MonoBehaviour
             impressions++;
             impressionText.text = "impressions: " + impressions;
         }
+    }
+
+    public void LoadOfferWallAd()
+    {
+        // Shown from OnOfferWallLoaded once it's ready.
+        Adivery.PrepareOfferWallAd(offerWallPlacement);
     }
 }

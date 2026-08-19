@@ -1,8 +1,8 @@
 # Adivery Unity Plugin
 
 A Unity plugin that wraps the [Adivery](https://adivery.com) Android SDK
-(mediated ad network: rewarded, interstitial, banner, and native ads) for
-use from C# in a Unity project. Android only — every call is a no-op on
+(mediated ad network: rewarded, interstitial, OfferWall, banner, and native
+ads) for use from C# in a Unity project. Android only — every call is a no-op on
 other platforms.
 
 Repo layout:
@@ -50,8 +50,13 @@ Adivery.PrepareInterstitialAd("YOUR_PLACEMENT_ID");
 ```
 
 See `Assets/Adivery/Adivery.cs`, `AdiveryListener.cs`, `BannerAd.cs`, and
-`NativeAd.cs` for the full API (interstitial/rewarded via `Adivery` +
+`NativeAd.cs` for the full API (interstitial/rewarded/OfferWall via `Adivery` +
 `AdiveryListener` events, banners via `BannerAd`, native ads via `NativeAd`).
+OfferWall needs `com.adivery:sdk` 4.10.0-alpha.1 or later; on older SDKs
+`Adivery.PrepareOfferWallAd` throws, since the native method doesn't exist.
+Unlike interstitial/rewarded, the SDK doesn't prefetch another OfferWall
+after one closes, so call `Adivery.PrepareOfferWallAd` again before each
+show (the sample prepares on button tap and shows from `OnOfferWallAdLoaded`).
 
 ## Running the sample app
 

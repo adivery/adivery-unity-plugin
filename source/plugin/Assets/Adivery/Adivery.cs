@@ -67,6 +67,15 @@ namespace AdiveryUnity
             GetAdiveryClass().CallStatic("prepareRewardedAd", GetAndroidActivity(), placementId);
         }
 
+        public static void PrepareOfferWallAd(string placementId)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+            GetAdiveryClass().CallStatic("prepareOfferWallAd", GetAndroidActivity(), placementId);
+        }
+
         internal static void AddListener(AdiveryListener listener)
         {
             if (!IsAdiverySupported())

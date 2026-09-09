@@ -20,26 +20,6 @@ project.ext {
     exportPath = file('Adivery.unitypackage').absolutePath
 }
 
-// Delete existing android plugin aar file.
-task clearAar(type: Delete) {
-    delete 'source/android-library/app/build/libs/adivery-unity.aar'
-}
-
-// Build jar from android plugin source files using existing Gradle build file.
-task buildAndroidPluginAar(type: GradleBuild) {
-    buildFile = 'source/android-library/app/build.gradle'
-    tasks = ['makeAar']
-}
-
-// Move android plugin jar to temporary build directory.
-task copyAndroidLibraryAar(type: Copy) {
-    from("source/android-library/app/build/libs")
-    into("${pluginSource}/Assets/Plugins/Android")
-    include('adivery-unity.aar')
-}
-
-copyAndroidLibraryAar.dependsOn(clearAar, buildAndroidPluginAar)
-
 // Build unity package using through command line interface.
 // Create new unity project with files in temporary build directory and export files within Assets/Adivery
 // to a unity package.
@@ -55,11 +35,8 @@ task exportPackage() {
                  "-exportPackage",
                  "Assets/Adivery",
                  "Assets/Plugins/Android/adivery-sdk.aar",
-                 "Assets/Plugins/Android/adivery-unity.aar",
                  "${exportPath}",
                  "-quit"
         }
     }
 }
-
-exportPackage.dependsOn(copyAndroidLibraryAar)

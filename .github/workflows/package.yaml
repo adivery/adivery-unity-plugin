@@ -21,7 +21,7 @@ jobs:
       - name: Install required dependencies
         run: |
           sudo apt update
-          sudo apt install -y libgtk-3-0 libnss3 libasound2 libx11-xcb1
+          sudo apt install -y libgtk-3-0t64 libnss3 libasound2t64 libx11-xcb1
 
       # Step 3: Download Unity Editor
       - name: Download Unity Editor

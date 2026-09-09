@@ -62,9 +62,6 @@ public class AdsController : MonoBehaviour
 #endif
         Adivery.Configure(appID);
 
-        Adivery.PrepareInterstitialAd(interstitialPlacement);
-        Adivery.PrepareRewardedAd(rewardedPlacement);
-
         listener = new AdiveryListener();
 
         listener.OnError += OnError;
@@ -78,6 +75,9 @@ public class AdsController : MonoBehaviour
         Adivery.AddPlacementListener(rewardedPlacement, rewardedListener);
 
         Adivery.AddListener(listener);
+
+        Adivery.PrepareInterstitialAd(interstitialPlacement);
+        Adivery.PrepareRewardedAd(rewardedPlacement);
 
         initRewarded();
 

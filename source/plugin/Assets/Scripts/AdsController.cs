@@ -129,11 +129,11 @@ public class AdsController : MonoBehaviour
         banner.LoadAd();
 
         largeBanner = new BannerAd(bannerPlacement, BannerAd.TYPE_LARGE_BANNER, BannerAd.POSITION_BOTTOM);
-        banner.OnAdLoaded += OnLargeBannerLoaded;
+        largeBanner.OnAdLoaded += OnLargeBannerLoaded;
         largeBanner.LoadAd();
 
         mediumRectangle = new BannerAd(bannerPlacement, BannerAd.TYPE_MEDIUM_RECTANGLE, BannerAd.POSITION_BOTTOM);
-        banner.OnAdLoaded += OnMediumRectangleAdLoaded;
+        mediumRectangle.OnAdLoaded += OnMediumRectangleAdLoaded;
         mediumRectangle.LoadAd();
     }
 
@@ -152,8 +152,6 @@ public class AdsController : MonoBehaviour
         nativeHeadline.text = native.GetHeadline();
         nativeAdvertiser.text = native.GetAdvertiser();
         nativeCtaText.text = native.GetCallToAction();
-
-        native.RecordImpression();
     }
 
     public void ShowMediumRectangle()

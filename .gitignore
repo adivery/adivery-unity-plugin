@@ -1,5 +1,3 @@
-.gradle
-build/
 unity.log
 *.hprof
 *.apk

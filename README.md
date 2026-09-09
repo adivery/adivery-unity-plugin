@@ -9,24 +9,30 @@ Repo layout:
 
 ```
 Assets/Adivery/            → the plugin itself (this is what gets exported/installed)
-Assets/Plugins/Android/    → adivery-sdk.aar + Gradle template used when building the sample
+Assets/Plugins/Android/    → Gradle template used when building the sample (the SDK itself is a Maven dependency, not a bundled AAR)
 source/plugin/             → a full Unity project used to build/export the package and host the sample scene
-build.gradle                → `exportPackage` task: builds Adivery.unitypackage from source/plugin/Assets/Adivery
 ```
 
 ## Requirements
 
 - Unity **6000.0.75f1** (see `source/plugin/ProjectSettings/ProjectVersion.txt`) with Android Build Support installed
-- Android SDK/NDK (Unity's bundled Android module works; `ANDROID_HOME`/`ANDROID_SDK_ROOT` must point at one)
-- JDK 21 (only needed for the Gradle `exportPackage` task, not for building the sample from the Unity Editor)
+- Android SDK/NDK (Unity's bundled Android module works; `ANDROID_HOME`/`ANDROID_SDK_ROOT` must point at one) — needed to build the sample APK; not needed to export the plugin package itself
+- JDK, matching whatever Unity's own internal Android/Gradle build needs — only relevant when building the sample APK, not for exporting the plugin package
 
 ## Installing the plugin in your own project
 
-The distributable is a `.unitypackage` containing `Assets/Adivery` and the
-bundled `adivery-sdk.aar`. Build it with:
+The distributable is a `.unitypackage` containing just `Assets/Adivery`
+(confirmed against the real, currently-published release — no bundled AAR;
+the native SDK is pulled in as a Maven dependency by whoever imports the
+package, per the [Unity integration docs](https://adivery.com/unity)).
+Build it with the `release-plugin` Claude Code skill in this repo
+(`.claude/skills/release-plugin/`), or manually:
 
 ```bash
-UNITY_EXE=/path/to/Unity ./gradlew exportPackage
+UNITY_EXE=/path/to/Unity "$UNITY_EXE" -batchmode -nographics \
+  -projectPath source/plugin \
+  -exportPackage Assets/Adivery Adivery.unitypackage \
+  -quit
 ```
 
 This produces `Adivery.unitypackage` at the repo root. Import it into your

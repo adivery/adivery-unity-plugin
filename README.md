@@ -53,13 +53,6 @@ See `Assets/Adivery/Adivery.cs`, `AdiveryListener.cs`, `BannerAd.cs`, and
 `NativeAd.cs` for the full API (interstitial/rewarded via `Adivery` +
 `AdiveryListener` events, banners via `BannerAd`, native ads via `NativeAd`).
 
-Note: `Adivery.AddListener`/`RemoveListener`/`AddPlacementListener`/
-`RemovePlacementListener` are `internal`, so your calling code must live in
-the same assembly as the plugin — i.e. don't put it under a custom
-`.asmdef` unless that `.asmdef` also references `Assets/Adivery`'s (the
-plugin ships with no `.asmdef` of its own, so this only matters if you add
-one yourself).
-
 ## Running the sample app
 
 `source/plugin` is a self-contained Unity project. Its `MainScene`
@@ -88,8 +81,7 @@ UNITY_EXE=/path/to/Unity ANDROID_HOME=/path/to/sdk \
 `build/AdiverySample.apk` under `source/plugin/`.)
 
 Or use the `release-sample` Claude Code skill in this repo
-(`.claude/skills/release-sample/`) to build *and* publish it as a GitHub
-release in one step.
+(`.claude/skills/release-sample/`) to build it in one step.
 
 Then install/run on a connected device:
 

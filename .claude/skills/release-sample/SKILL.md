@@ -5,10 +5,11 @@ description: >-
   Android and publish it as its own GitHub release asset. Use when the user
   asks to "release the sample", "build and release the sample app",
   "publish the sample app on GitHub", or similar. This is NOT the plugin
-  release flow — it never touches Adivery.unitypackage, the AAR, or
-  pub-equivalent publishing, and it never attaches to the plugin's own
-  vX.Y.Z release for that SDK version; the sample gets its own dedicated
-  release. Flow: preflight checks → batchmode build → publish the APK
+  release flow (see release-plugin for that) — it never touches
+  Adivery.unitypackage, the AAR, or pub-equivalent publishing, and it
+  never attaches to the plugin's own vX.Y.Z release for that SDK version;
+  the sample gets its own dedicated release. Flow: preflight checks →
+  batchmode build → publish the APK
   (create a DRAFT release first if one doesn't exist yet, prompting before
   publishing; otherwise just update the asset on the existing sample
   release).
@@ -19,11 +20,10 @@ description: >-
 This skill builds `source/plugin`'s sample scene (`MainScene`, driven by
 `Assets/Scripts/AdsController.cs`) for Android and publishes the APK as a
 GitHub release of its own. It does **not** build or publish
-`Adivery.unitypackage` — that's a separate, manual flow (`./gradlew
-exportPackage` + the existing tag-per-SDK-version releases) — and it does
-**not** attach anything to that release either; the sample's release is
-independent, under its own tag namespace, so the two never collide or need
-to be kept in sync.
+`Adivery.unitypackage` — that's `release-plugin`, a separate skill — and it
+does **not** attach anything to that release either; the sample's release
+is independent, under its own tag namespace, so the two never collide or
+need to be kept in sync.
 
 Repo: `adivery/adivery-unity-plugin` (origin: `https://github.com/adivery/adivery-unity-plugin.git`)
 Unity project: `source/plugin` (scene: `Assets/Scenes/MainScene.unity`)

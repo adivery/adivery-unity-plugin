@@ -3,6 +3,8 @@
 *   Useage: ./gradlew exportPackage
 */
 
+import org.gradle.process.ExecOperations
+
 defaultTasks 'exportPackage'
 
 // Project level variables.
@@ -26,8 +28,9 @@ project.ext {
 // Command line usage and arguments documented at http://docs.unity3d.com/Manual/CommandLineArguments.html.
 task exportPackage() {
     description = "Creates and exports the Plugin unity package"
+    def execOps = services.get(ExecOperations)
     doLast {
-        exec {
+        execOps.exec {
             executable "${unity_exe}"
             args "-batchmode",
                  "-projectPath", "${pluginSource}",

@@ -73,17 +73,25 @@ Settings > Android > Build And Run` (with a device connected) or just press
 Play in the Editor to test in-Editor UI wiring (ads themselves only work on
 device, since the SDK is Android-only).
 
-To build headlessly instead, add an Editor script under
-`Assets/Editor/` calling `BuildPipeline.BuildPlayer` for `BuildTarget.Android`
-with `MainScene` in the scene list, then run it via:
+To build headlessly instead, use the batchmode build script this repo
+already ships, `Assets/Editor/BuildScripts/AdiverySampleBuild.cs`
+(excluded from player builds and from the exported plugin package):
 
 ```bash
 UNITY_EXE=/path/to/Unity ANDROID_HOME=/path/to/sdk \
+  ADIVERY_SAMPLE_BUILD_OUTPUT=/path/to/AdiverySample.apk \
   "$UNITY_EXE" -batchmode -nographics \
     -projectPath source/plugin \
-    -executeMethod YourBuildScript.BuildAndroid \
+    -executeMethod AdiverySampleBuild.BuildAndroid \
     -quit
 ```
+
+(`ADIVERY_SAMPLE_BUILD_OUTPUT` is optional — it defaults to
+`build/AdiverySample.apk` under `source/plugin/`.)
+
+Or use the `release-sample` Claude Code skill in this repo
+(`.claude/skills/release-sample/`) to build *and* publish it as a GitHub
+release in one step.
 
 Then install/run on a connected device:
 

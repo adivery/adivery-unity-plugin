@@ -4,7 +4,7 @@ using UnityEngine;
 // Dev tooling for building the sample app (MainScene) in batchmode, used by
 // the `release-sample` skill. Lives under Assets/Editor so it's excluded
 // from player builds and NOT part of the exported Adivery.unitypackage
-// (build.gradle's exportPackage task only pulls Assets/Adivery + the aar).
+// (the `release-plugin` skill only exports Assets/Adivery).
 public static class AdiverySampleBuild
 {
     private const string MainScene = "Assets/Scenes/MainScene.unity";

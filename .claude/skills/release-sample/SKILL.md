@@ -53,6 +53,14 @@ from player builds and from the exported unitypackage)
   `noCompress` format that breaks the Android build (this bit us before;
   see git history on that file). Don't try to fix it as part of this
   skill — report it and stop.
+- `source/plugin/ProjectSettings/ProjectSettings.asset` doesn't have
+  `useCustomLauncherGradleManifest: 1` — i.e. "Custom Launcher Gradle
+  Template" is off in Player Settings. Unity then silently ignores
+  launcherTemplate.gradle entirely and the built APK won't include the
+  real Adivery SDK, even though the file itself looks correct (this bit
+  us before too — the file's content was always fine, the switch that
+  activates it was off). Don't flip it as part of this skill — report
+  it and stop.
 - The batchmode build exits non-zero, or no APK ends up at the expected path.
 - `gh auth status` fails.
 - `git status --short` shows uncommitted changes unrelated to this skill's
@@ -78,27 +86,34 @@ grep -q "unityStreamingAssets.tokenize" source/plugin/Assets/Plugins/Android/lau
   && echo "launcherTemplate.gradle OK" \
   || echo "STOP: launcherTemplate.gradle has regressed to the old noCompress format"
 
-# 3. Resolve the matching Unity Editor
+# 3. Regression guard on Player Settings: Custom Launcher Gradle Template
+#    must be ON, or Unity silently ignores launcherTemplate.gradle above
+#    and the built APK won't include the real SDK (see STOP conditions).
+grep -q "useCustomLauncherGradleManifest: 1" source/plugin/ProjectSettings/ProjectSettings.asset \
+  && echo "Custom Launcher Gradle Template: ON" \
+  || echo "STOP: Custom Launcher Gradle Template is OFF in ProjectSettings.asset"
+
+# 4. Resolve the matching Unity Editor
 UNITY_VERSION=$(awk '{print $2}' source/plugin/ProjectSettings/ProjectVersion.txt | head -1)
 UNITY_EXE="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
 [ -x "$UNITY_EXE" ] && echo "Unity: $UNITY_EXE" || echo "STOP: Unity $UNITY_VERSION not installed at $UNITY_EXE"
 
-# 4. Project must not already be open in an Editor
+# 5. Project must not already be open in an Editor
 if [ -e source/plugin/Temp/UnityLockfile ] && fuser source/plugin/Temp/UnityLockfile >/dev/null 2>&1; then
   echo "STOP: source/plugin is open in a running Unity Editor — ask the user to close it first"
 fi
 
-# 5. Android SDK
+# 6. Android SDK
 ANDROID_HOME="${ANDROID_HOME:-$(grep sdk.dir local.properties 2>/dev/null | cut -d= -f2-)}"
 [ -d "$ANDROID_HOME" ] && echo "ANDROID_HOME: $ANDROID_HOME" || echo "STOP: no usable Android SDK found"
 
-# 6. GitHub auth
+# 7. GitHub auth
 gh auth status
 
-# 7. Working tree
+# 8. Working tree
 git status --short
 
-# 8. Does the sample's own release already exist? Decides Phase 2's path.
+# 9. Does the sample's own release already exist? Decides Phase 2's path.
 gh release view "$TAG" --repo adivery/adivery-unity-plugin >/dev/null 2>&1 \
   && echo "Release $TAG exists — will just update its asset" \
   || echo "No release $TAG yet — will create it as a draft"

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using AdiveryUnity;
 using System;
@@ -6,20 +6,38 @@ using System;
 
 public class AdsController : MonoBehaviour
 {
-    string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
-    string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
-    string interstitialPlacement = "0045a4aa-1498-4790-9eed-6e33ac870e5f";
-    string bannerPlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
-    string largeBannerPlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
-    string mediumRectanglePlacement = "2f71ec44-f30a-4043-9cc1-f32347a07f8b";
-    string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
+    [Header("Adivery Configuration")]
+    [SerializeField] private string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
+    [SerializeField] private string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
+    [SerializeField] private string interstitialPlacement = "de5db046-765d-478f-bb2e-30dc2eaf3f51";
+    [SerializeField] private string bannerPlacement = "5f2c4c86-a6ec-4735-9a44-f881fe40789f";
+    [SerializeField] private string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
+
+    [Header("UI - Buttons")]
+    [SerializeField] private Button rewardedButton;
+    [SerializeField] private Button interstitialButton;
+    [SerializeField] private Button bannerButton;
+    [SerializeField] private Button largeBannerButton;
+    [SerializeField] private Button mediumRectangleButton;
+    [SerializeField] private Button loadNativeAdButton;
+
+    [Header("UI - Labels")]
+    [SerializeField] private Text rewardText;
+    [SerializeField] private Text skipText;
+    [SerializeField] private Text impressionText;
+
+    [Header("UI - Native Ad Template")]
+    [SerializeField] private RawImage nativeIcon;
+    [SerializeField] private RawImage nativeImage;
+    [SerializeField] private Text nativeHeadline;
+    [SerializeField] private Text nativeAdvertiser;
+    [SerializeField] private Text nativeCtaText;
+    [SerializeField] private Button nativeCtaButton;
+
     NativeAd native;
     BannerAd banner, largeBanner, mediumRectangle;
     AdiveryListener listener;
     AdiveryListener rewardedListener;
-    Text rewardText;
-    Text impressionText;
-    Text skipText;
     int score = 0;
     int skips = 0;
     int impressions = 0;
@@ -27,17 +45,22 @@ public class AdsController : MonoBehaviour
     private void OnDestroy()
     {
         Adivery.RemoveListener(listener);
+        Adivery.RemovePlacementListener(rewardedPlacement, rewardedListener);
+
+        banner?.Destroy();
+        largeBanner?.Destroy();
+        mediumRectangle?.Destroy();
+        native?.Destroy();
     }
 
     // Use this for initialization
     void Start()
     {
         Debug.Log("start called");
+#if DEBUG
         Adivery.SetLoggingEnabled(true);
+#endif
         Adivery.Configure(appID);
-
-        Adivery.PrepareInterstitialAd(interstitialPlacement);
-        Adivery.PrepareRewardedAd(rewardedPlacement);
 
         listener = new AdiveryListener();
 
@@ -46,24 +69,24 @@ public class AdsController : MonoBehaviour
         listener.OnRewardedAdClicked += OnRewardedClicked;
 
         rewardedListener = new AdiveryListener();
-        listener.OnError += OnError;
-        listener.OnRewardedAdClosed += OnRewardedClosed;
+        rewardedListener.OnError += OnError;
+        rewardedListener.OnRewardedAdClosed += OnRewardedClosed;
 
         Adivery.AddPlacementListener(rewardedPlacement, rewardedListener);
 
         Adivery.AddListener(listener);
 
+        Adivery.PrepareInterstitialAd(interstitialPlacement);
+        Adivery.PrepareRewardedAd(rewardedPlacement);
+
         initRewarded();
 
-        GameObject.Find("rewarded").GetComponent<Button>().onClick.AddListener(delegate () { ShowRewardedAd(); });
-        GameObject.Find("interstitial").GetComponent<Button>().onClick.AddListener(delegate () { ShowInterstitial(); });
-        GameObject.Find("banner").GetComponent<Button>().onClick.AddListener(delegate () { ShowBannerAd(); });
-        GameObject.Find("largeBanner").GetComponent<Button>().onClick.AddListener(delegate () { ShowLargeBanner(); });
-        GameObject.Find("mediumRectangle").GetComponent<Button>().onClick.AddListener(delegate () { ShowMediumRectangle(); });
-        GameObject.Find("native").GetComponent<Button>().onClick.AddListener(delegate () { LoadNativeAd(); });
-        rewardText = GameObject.Find("rewardText").GetComponent<Text>();
-        skipText = GameObject.Find("skipText").GetComponent<Text>();
-        impressionText = GameObject.Find("impressionText").GetComponent<Text>();
+        rewardedButton.onClick.AddListener(ShowRewardedAd);
+        interstitialButton.onClick.AddListener(ShowInterstitial);
+        bannerButton.onClick.AddListener(ShowBannerAd);
+        largeBannerButton.onClick.AddListener(ShowLargeBanner);
+        mediumRectangleButton.onClick.AddListener(ShowMediumRectangle);
+        loadNativeAdButton.onClick.AddListener(LoadNativeAd);
     }
 
     public void OnRewardedClicked(object caller, string placement)
@@ -105,20 +128,16 @@ public class AdsController : MonoBehaviour
         banner.OnAdLoaded += OnBannerAdLoaded;
         banner.LoadAd();
 
-        largeBanner = new BannerAd(largeBannerPlacement, BannerAd.TYPE_LARGE_BANNER, BannerAd.POSITION_BOTTOM);
-        banner.OnAdLoaded += OnLargeBannerLoaded;
+        largeBanner = new BannerAd(bannerPlacement, BannerAd.TYPE_LARGE_BANNER, BannerAd.POSITION_BOTTOM);
+        largeBanner.OnAdLoaded += OnLargeBannerLoaded;
         largeBanner.LoadAd();
 
-        mediumRectangle = new BannerAd(mediumRectanglePlacement, BannerAd.TYPE_MEDIUM_RECTANGLE, BannerAd.POSITION_BOTTOM);
-        banner.OnAdLoaded += OnMediumRectangleAdLoaded;
+        mediumRectangle = new BannerAd(bannerPlacement, BannerAd.TYPE_MEDIUM_RECTANGLE, BannerAd.POSITION_BOTTOM);
+        mediumRectangle.OnAdLoaded += OnMediumRectangleAdLoaded;
         mediumRectangle.LoadAd();
-
-        // native = new NativeAd(nativePlacement);
-        // native.LoadAd();
-
     }
 
-    public void LoadNativeAd() 
+    public void LoadNativeAd()
     {
         native = new NativeAd(nativePlacement);
         native.OnAdLoaded += ShowNativeAd;
@@ -127,22 +146,12 @@ public class AdsController : MonoBehaviour
 
     public void ShowNativeAd(object caller, EventArgs args)
     {
-
-        RawImage icon = GameObject.Find("icon").GetComponent<RawImage>();
-        Text headline = GameObject.Find("headline").GetComponent<Text>();
-        Button cta = GameObject.Find("nativeButton").GetComponent<Button>();
-        RawImage image = GameObject.Find("image").GetComponent<RawImage>();
-        Text advertiser = GameObject.Find("advertiser").GetComponent<Text>();
-        Text ctaText = GameObject.Find("ctaText").GetComponent<Text>();
-
-        icon.texture = native.GetIconTexture2D();
-        image.texture = native.GetImageTexture2D();
-        cta.onClick.AddListener(delegate () { native.RecordClick(); });
-        headline.text = native.GetHeadline();
-        advertiser.text = native.GetAdvertiser();
-        ctaText.text = native.GetCallToAction();
-
-        native.RecordImpression();
+        nativeIcon.texture = native.GetIconTexture2D();
+        nativeImage.texture = native.GetImageTexture2D();
+        nativeCtaButton.onClick.AddListener(native.RecordClick);
+        nativeHeadline.text = native.GetHeadline();
+        nativeAdvertiser.text = native.GetAdvertiser();
+        nativeCtaText.text = native.GetCallToAction();
     }
 
     public void ShowMediumRectangle()

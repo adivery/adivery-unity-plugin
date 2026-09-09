@@ -5,8 +5,12 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
-/[Pp]ackages/
-/[Pp]roject[Ss]ettings/
+/.utmp/
+
+# Track package dependency pins, ignore everything else UPM writes here (caches, tarballs).
+/[Pp]ackages/*
+!/[Pp]ackages/manifest.json
+!/[Pp]ackages/packages-lock.json
 
 !/[Aa]ssets/**/*.meta
 
@@ -31,6 +35,3 @@ ExportedObj/
 *.opendb
 *.VC.db
 .idea
-
-adivery-unity.aar
-adivery-unity.aar.meta

@@ -21,7 +21,7 @@ namespace AdiveryUnity
 
     public class AdiveryListener : AndroidJavaProxy
     {
-        internal AndroidJavaObject adiveryListenreObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.FullScreenAd");
+        internal readonly AndroidJavaObject adiveryListenerObject;
 
         private EventHandler<AdiveryError> _onError;
         public event EventHandler<AdiveryError> OnError
@@ -170,7 +170,15 @@ namespace AdiveryUnity
             }
         }
 
-        public AdiveryListener() : base("com.adivery.sdk.plugins.unity.FullScreenAdCallback") { }
+        public AdiveryListener() : base("com.adivery.sdk.plugins.unity.FullScreenAdCallback")
+        {
+            if (!Adivery.IsAdiverySupported())
+            {
+                return;
+            }
+
+            adiveryListenerObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.FullScreenAd");
+        }
 
         public virtual void onError(string placementId, string reason)
         {

@@ -6,8 +6,6 @@ namespace AdiveryUnity
 {
     public class Adivery
     {
-        internal static AndroidJavaObject adiveryListenreObject = new AndroidJavaObject("com.adivery.sdk.plugins.unity.FullScreenAd");
-
         internal static bool IsAdiverySupported()
         {
             return Application.platform == RuntimePlatform.Android;
@@ -75,7 +73,7 @@ namespace AdiveryUnity
             {
                 return;
             }
-            listener.adiveryListenreObject.Call("setListener", listener);
+            listener.adiveryListenerObject.Call("setListener", listener);
         }
 
         internal static void RemoveListener(AdiveryListener listener)
@@ -84,21 +82,21 @@ namespace AdiveryUnity
             {
                 return;
             }
-            listener.adiveryListenreObject.Call("removeListener");
+            listener.adiveryListenerObject.Call("removeListener");
         }
 
         internal static void AddPlacementListener(string placementId, AdiveryListener listener){
             if (!IsAdiverySupported()){
                 return;
             }
-            listener.adiveryListenreObject.Call("addPlacementListener", placementId, listener);
+            listener.adiveryListenerObject.Call("addPlacementListener", placementId, listener);
         }
 
         internal static void RemovePlacementListener(string placementId, AdiveryListener listener){
             if (!IsAdiverySupported()){
                 return;
             }
-            listener.adiveryListenreObject.Call("removePlacementListener", placementId);
+            listener.adiveryListenerObject.Call("removePlacementListener", placementId);
         }
 
         public static void Show(string placement)

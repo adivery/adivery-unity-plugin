@@ -24,7 +24,7 @@ source/plugin/             → a full Unity project used to build/export the pac
 The distributable is a `.unitypackage` containing just `Assets/Adivery`
 (confirmed against the real, currently-published release — no bundled AAR;
 the native SDK is pulled in as a Maven dependency by whoever imports the
-package, per the [Unity integration docs](https://adivery.com/unity)).
+package, per Adivery's Unity integration docs).
 Build it with the `release-plugin` Claude Code skill in this repo
 (`.claude/skills/release-plugin/`), or manually:
 

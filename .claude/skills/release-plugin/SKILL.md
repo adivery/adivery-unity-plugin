@@ -80,7 +80,7 @@ anywhere in this repo — don't copy that path into this skill.
 cd /path/to/adivery-unity-plugin   # repo root
 
 # 1. Version this build targets, and the tag it maps to.
-VERSION=$(grep -oP "com\.adivery:sdk:\K[0-9.]+" source/plugin/Assets/Plugins/Android/launcherTemplate.gradle)
+VERSION=$(grep -oP "com\.adivery:sdk:\K[0-9A-Za-z.+-]+" source/plugin/Assets/Plugins/Android/launcherTemplate.gradle)
 TAG="v$VERSION"
 echo "Building Adivery.unitypackage for SDK $VERSION -> release tag $TAG"
 
@@ -154,6 +154,8 @@ Asset name: `Adivery.unitypackage` (matches the existing convention —
 every tag is new:
 
 ```bash
+# Alpha/beta SDK versions (4.10.0-alpha.1) are released like any other: a normal
+# release that becomes Latest. Don't add --prerelease.
 gh release create "$TAG" \
   --repo adivery/adivery-unity-plugin \
   --title "$TAG" \
@@ -175,8 +177,12 @@ them to:
 Only on confirmation:
 
 ```bash
-gh release edit "$TAG" --repo adivery/adivery-unity-plugin --draft=false
+gh release edit "$TAG" --repo adivery/adivery-unity-plugin --draft=false --latest
 ```
+
+`--latest` makes this release the repo's Latest (what
+`.../releases/latest/download/Adivery.unitypackage` serves), including
+alpha/beta versions.
 
 ---
 

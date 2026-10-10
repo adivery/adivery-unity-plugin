@@ -77,7 +77,7 @@ cd /path/to/adivery-unity-plugin   # repo root
 # 1. Version, for the release notes/title — the Adivery SDK version the
 #    sample currently targets. Not used for the tag, deliberately: the
 #    sample release is independent of the plugin's own vX.Y.Z releases.
-VERSION=$(grep -oP "com\.adivery:sdk:\K[0-9.]+" source/plugin/Assets/Plugins/Android/launcherTemplate.gradle)
+VERSION=$(grep -oP "com\.adivery:sdk:\K[0-9A-Za-z.+-]+" source/plugin/Assets/Plugins/Android/launcherTemplate.gradle)
 TAG="sample-latest"
 echo "Sample currently targets Adivery SDK $VERSION -> release tag $TAG"
 

@@ -10,7 +10,7 @@ public class AdsController : MonoBehaviour
     [SerializeField] private string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
     [SerializeField] private string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
     [SerializeField] private string interstitialPlacement = "de5db046-765d-478f-bb2e-30dc2eaf3f51";
-    [SerializeField] private string offerWallPlacement = "8ec21007-19e6-4e71-a156-9d3f326a839a";
+    [SerializeField] private string offerWallPlacement = "9cad440a-8271-49d2-8f81-0819268a5ce4";
     [SerializeField] private string bannerPlacement = "5f2c4c86-a6ec-4735-9a44-f881fe40789f";
     [SerializeField] private string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
 

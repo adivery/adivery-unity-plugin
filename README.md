@@ -42,6 +42,7 @@ Basic usage once imported:
 using AdiveryUnity;
 
 Adivery.Configure("YOUR_APP_ID");
+Adivery.SetUserId("YOUR_USER_ID"); 
 
 var listener = new AdiveryListener();
 listener.OnInterstitialAdLoaded += (s, placementId) => Adivery.Show(placementId);

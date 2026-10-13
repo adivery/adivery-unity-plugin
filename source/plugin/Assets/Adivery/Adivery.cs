@@ -49,6 +49,16 @@ namespace AdiveryUnity
             GetAdiveryClass().CallStatic("setLoggingEnabled", enabled);
         }
 
+        public static void SetUserId(string userId)
+        {
+            if (!IsAdiverySupported())
+            {
+                return;
+            }
+
+            GetAdiveryClass().CallStatic("setUserId", userId);
+        }
+
         public static void PrepareInterstitialAd(string placementId)
         {
             if (!IsAdiverySupported())

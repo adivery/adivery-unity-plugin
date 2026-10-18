@@ -6,9 +6,10 @@ description: >-
   asks to "release the sample", "build and release the sample app",
   "publish the sample app on GitHub", or similar. This is NOT the plugin
   release flow (see release-plugin for that) — it never touches
-  Adivery.unitypackage, the AAR, or pub-equivalent publishing, and it
-  never attaches to the plugin's own vX.Y.Z release for that SDK version;
-  the sample gets its own dedicated release. Flow: preflight checks →
+  Adivery.unitypackage, the AAR, or pub-equivalent publishing. It only
+  refreshes the standalone rolling sample-latest release; release-plugin
+  already builds and attaches the sample APK to every numbered vX.Y.Z
+  release by itself. Flow: preflight checks →
   batchmode build → publish the APK
   (create a DRAFT release first if one doesn't exist yet, prompting before
   publishing; otherwise just update the asset on the existing sample
@@ -21,9 +22,10 @@ This skill builds `source/plugin`'s sample scene (`MainScene`, driven by
 `Assets/Scripts/AdsController.cs`) for Android and publishes the APK as a
 GitHub release of its own. It does **not** build or publish
 `Adivery.unitypackage` — that's `release-plugin`, a separate skill — and it
-does **not** attach anything to that release either; the sample's release
-is independent, under its own tag namespace, so the two never collide or
-need to be kept in sync.
+does **not** touch the numbered `vX.Y.Z` releases; `release-plugin` builds
+and attaches its own `AdiverySample.apk` to each of those. This skill only
+maintains the rolling `sample-latest` release, for refreshing the sample
+between plugin releases.
 
 Repo: `adivery/adivery-unity-plugin` (origin: `https://github.com/adivery/adivery-unity-plugin.git`)
 Unity project: `source/plugin` (scene: `Assets/Scenes/MainScene.unity`)

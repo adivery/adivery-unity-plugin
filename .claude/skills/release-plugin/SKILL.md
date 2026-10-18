@@ -3,23 +3,30 @@ name: release-plugin
 description: >-
   Build Adivery.unitypackage (the actual customer-facing Unity plugin
   package — just Assets/Adivery's C# source, no AAR, no Gradle templates)
-  and publish it as the plugin's own numbered vX.Y.Z GitHub release. Use
-  when the user asks to "release the plugin", "build Adivery.unitypackage",
-  "cut a new plugin release", or similar. This is NOT the sample-app flow
-  (see release-sample) — it never touches the sample's APK, and every run
-  creates a brand-new numbered release (never a rolling/mutable tag), so
-  it always drafts first and asks before publishing. Flow: preflight
-  checks → batchmode export → verify package contents → publish as a
-  draft release → human confirms → publish.
+  AND the sample app APK (AdiverySample.apk), and publish both as assets of
+  the plugin's own numbered vX.Y.Z GitHub release. Use when the user asks
+  to "release the plugin", "build Adivery.unitypackage", "cut a new plugin
+  release", or similar. Every run builds and attaches the sample APK too.
+  The standalone rolling sample release is a separate flow (see
+  release-sample). Every run creates a brand-new numbered release (never a
+  rolling/mutable tag), so it always drafts first and asks before
+  publishing. Flow: preflight checks → batchmode package export → verify
+  package contents → batchmode sample APK build → publish both as a draft
+  release → human confirms → publish.
 ---
 
 # Release the plugin package
 
 This skill builds `Adivery.unitypackage` — the package customers actually
 import (`Assets/Adivery/*.cs` only) — and publishes it as the plugin's own
-numbered release on GitHub. It does **not** touch the sample app
-(`source/plugin`'s buildable APK) — that's `release-sample`, a separate,
-independent release stream under its own `sample-latest` tag.
+numbered release on GitHub. Every run also builds the sample app
+(`source/plugin`'s `MainScene`, `com.adivery.unitysample`) for Android and
+attaches the APK as `AdiverySample.apk` to the same release, so each
+`vX.Y.Z` ships a sample built from exactly the same commit. The separate
+`release-sample` skill (rolling `sample-latest` tag) still exists for
+refreshing the sample on its own; this skill does not touch that tag.
+Sample build script: `source/plugin/Assets/Editor/BuildScripts/AdiverySampleBuild.cs`
+(`-executeMethod AdiverySampleBuild.BuildAndroid`).
 
 Repo: `adivery/adivery-unity-plugin` (origin: `https://github.com/adivery/adivery-unity-plugin.git`)
 Unity project used only to *export* the package (not built/compiled for a
@@ -55,6 +62,12 @@ anywhere in this repo — don't copy that path into this skill.
 - The project is already open in a running Unity Editor (a live lock on
   `source/plugin/Temp/UnityLockfile`) — ask the user to close it.
 - No Unity Editor install matching `source/plugin/ProjectSettings/ProjectVersion.txt` found under `~/Unity/Hub/Editor/`.
+- No usable Android SDK (`ANDROID_HOME`, or `sdk.dir` in `local.properties`) — needed for the sample APK.
+- `launcherTemplate.gradle` lacks `unityStreamingAssets.tokenize` (regressed
+  to the old `noCompress` format), or `ProjectSettings.asset` lacks
+  `useCustomLauncherGradleManifest: 1` (Custom Launcher Gradle Template
+  off, so the APK would silently miss the real SDK). Report; don't fix here.
+- The sample APK build exits non-zero or produces a missing/empty APK.
 - `source/plugin/Assets/Plugins/Android/launcherTemplate.gradle` doesn't
   contain a `com.adivery:sdk:X.Y.Z` line to extract the version from.
 - The release tag `vX.Y.Z` (derived from that version) already exists **and
@@ -103,7 +116,15 @@ if [ -e source/plugin/Temp/UnityLockfile ] && fuser source/plugin/Temp/UnityLock
   echo "STOP: source/plugin is open in a running Unity Editor — ask the user to close it first"
 fi
 
-# 5. GitHub auth
+# 5. Sample-build guards (see STOP conditions)
+grep -q "unityStreamingAssets.tokenize" source/plugin/Assets/Plugins/Android/launcherTemplate.gradle \
+  || echo "STOP: launcherTemplate.gradle has regressed to the old noCompress format"
+grep -q "useCustomLauncherGradleManifest: 1" source/plugin/ProjectSettings/ProjectSettings.asset \
+  || echo "STOP: Custom Launcher Gradle Template is OFF in ProjectSettings.asset"
+ANDROID_HOME="${ANDROID_HOME:-$(grep sdk.dir local.properties 2>/dev/null | cut -d= -f2-)}"
+[ -d "$ANDROID_HOME" ] && echo "ANDROID_HOME: $ANDROID_HOME" || echo "STOP: no usable Android SDK found"
+
+# 5b. GitHub auth
 gh auth status
 
 # 6. Working tree
@@ -144,11 +165,29 @@ diff <(echo "$PACKAGED_PATHS" | grep '\.cs$') <(echo "$EXPECTED_PATHS") \
   || echo "STOP: packaged .cs files don't match Assets/Adivery's current contents"
 ```
 
+## Phase 1b — Build the sample APK
+
+Same commit, same Unity project as the package export above.
+
+```bash
+export ANDROID_HOME ANDROID_SDK_ROOT="$ANDROID_HOME"
+APK="$WORKDIR/AdiverySample.apk"
+
+ADIVERY_SAMPLE_BUILD_OUTPUT="$APK" "$UNITY_EXE" -batchmode -nographics \
+  -projectPath source/plugin \
+  -logFile "$WORKDIR/build.log" \
+  -executeMethod AdiverySampleBuild.BuildAndroid \
+  -quit
+echo "exit: $?"   # STOP if non-zero — tail "$WORKDIR/build.log" and report
+
+ls -la "$APK"      # STOP if missing/zero bytes
+```
+
 ## Phase 2 — Publish to GitHub
 
-Asset name: `Adivery.unitypackage` (matches the existing convention —
-`build.gradle`'s `exportPath`, and the docs' download link
-`.../releases/latest/download/Adivery.unitypackage`).
+Assets: `Adivery.unitypackage` and `AdiverySample.apk`. The package name
+matches the existing convention (`build.gradle`'s `exportPath`, and the
+docs' download link `.../releases/latest/download/Adivery.unitypackage`).
 
 **Always create as a draft first** — there is no non-interactive path here,
 every tag is new:
@@ -161,12 +200,13 @@ gh release create "$TAG" \
   --title "$TAG" \
   --notes "Adivery Unity plugin package for SDK version $VERSION." \
   --draft \
-  "$PACKAGE#Adivery.unitypackage"
+  "$PACKAGE#Adivery.unitypackage" \
+  "$APK#AdiverySample.apk"
 ```
 
 (If `$TAG` already existed as a draft per Phase 0, use
-`gh release upload "$TAG" "$PACKAGE#Adivery.unitypackage" --repo adivery/adivery-unity-plugin --clobber`
-to replace its asset instead of creating a new release.)
+`gh release upload "$TAG" "$PACKAGE#Adivery.unitypackage" "$APK#AdiverySample.apk" --repo adivery/adivery-unity-plugin --clobber`
+to replace its assets instead of creating a new release.)
 
 Show the user the draft URL and the placeholder release notes, and ask
 them to:
@@ -188,7 +228,7 @@ alpha/beta versions.
 
 ## Final report
 
-Summarize: the SDK version, the release URL, the asset name
-(`Adivery.unitypackage`), and confirmation the package's contents were
+Summarize: the SDK version, the release URL, the asset names
+(`Adivery.unitypackage`, `AdiverySample.apk`), and confirmation the package's contents were
 verified against `Assets/Adivery`. Note the local `$WORKDIR` path and that
 it's safe to delete afterward.

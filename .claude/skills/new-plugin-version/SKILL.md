@@ -349,8 +349,10 @@ these outward-facing steps:
    `gh release create` tags the default branch's HEAD unless told
    otherwise, so releasing before the merge would tag a commit without the
    changes. That skill drafts first and asks again before publishing; give
-   it the integrator-facing summary from Phase 2 as release notes.
-3. Optionally run **`release-sample`** to refresh the sample APK.
+   it the integrator-facing summary from Phase 2 as release notes. It also
+   builds the sample APK and attaches it to the same release.
+3. Optionally run **`release-sample`** to refresh the standalone
+   `sample-latest` APK.
 
 ---
 

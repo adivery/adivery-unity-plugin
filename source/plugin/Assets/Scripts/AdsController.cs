@@ -7,12 +7,12 @@ using System;
 public class AdsController : MonoBehaviour
 {
     [Header("Adivery Configuration")]
-    [SerializeField] private string appID = "7e27fb38-5aff-473a-998f-437b89426f66";
-    [SerializeField] private string rewardedPlacement = "2efedcaa-fcc0-4610-a025-109ff17594af";
-    [SerializeField] private string interstitialPlacement = "de5db046-765d-478f-bb2e-30dc2eaf3f51";
+    [SerializeField] private string appID = "738c5e66-2e4f-4ff0-8118-ef6c8235a5e9";
+    [SerializeField] private string rewardedPlacement = "29f509a9-3826-4ada-8404-4735aa14b510";
+    [SerializeField] private string interstitialPlacement = "5788d25b-b7d6-442c-a562-b4bef582c18c";
     [SerializeField] private string offerWallPlacement = "9cad440a-8271-49d2-8f81-0819268a5ce4";
-    [SerializeField] private string bannerPlacement = "5f2c4c86-a6ec-4735-9a44-f881fe40789f";
-    [SerializeField] private string nativePlacement = "25928bf1-d4f7-432c-aaf7-1780602796c3";
+    [SerializeField] private string bannerPlacement = "06f0c520-3cc8-45c0-bbf1-f866f7eac525";
+    [SerializeField] private string nativePlacement = "9bc87b9f-3aef-4988-b1d2-2f4e5b67b2c5";
 
     [Header("UI - Buttons")]
     [SerializeField] private Button rewardedButton;
